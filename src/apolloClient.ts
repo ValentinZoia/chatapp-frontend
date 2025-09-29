@@ -1,3 +1,264 @@
+// ----------- VERSION 3 -----------
+// Migración a Apollo Client v3 conservando WebSockets, uploads y refresco automático de token
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloLink,
+  Observable,
+  // HttpLink,
+} from "@apollo/client";
+import UploadHttpLink from "apollo-upload-client/UploadHttpLink.mjs";
+// import { getMainDefinition } from "@apollo/client/utilities";
+import { SetContextLink } from "@apollo/client/link/context";
+import { ErrorLink } from "@apollo/client/link/error";
+// import { WebSocketLink } from "@apollo/client/link/ws";
+import { useUserStore } from "./stores/userStore";
+import {
+  CombinedGraphQLErrors,
+  CombinedProtocolErrors,
+} from "@apollo/client/errors";
+
+// Variables de entorno para URLs
+const HTTP_URL =
+  import.meta.env.VITE_GRAPHQL_HTTP_URL || "http://localhost:3000/graphql";
+// const WS_URL =
+//   import.meta.env.VITE_GRAPHQL_WS_URL || "ws://localhost:3000/graphql";
+
+// Refresco de token
+async function refreshToken(client) {
+  try {
+    const { data } = await client.mutate({
+      mutation: /* GraphQL */ `
+        mutation RefreshToken {
+          refreshToken
+        }
+      `,
+    });
+    const newAccessToken = data?.refreshToken;
+    if (!newAccessToken) throw new Error("New access token not received");
+    return `Bearer ${newAccessToken}`;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Error getting new access token");
+  }
+}
+
+function clearAuthSession() {
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("refreshToken");
+
+  // Limpiar estado del usuario
+  useUserStore.setState({
+    id: undefined,
+    avatarUrl: null,
+    fullname: "",
+    email: "",
+  });
+
+  // Opcional: redirigir al login
+  // window.location.href = "/login";
+}
+
+let retryCount = 0;
+const maxRetry = 3;
+
+// WebSocketLink para suscripciones
+// const wsLinkV3 = new WebSocketLink({
+//   uri: WS_URL,
+//   options: {
+//     reconnect: true,
+//     connectionParams: () => ({
+//       Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+//     }),
+//   },
+// });
+
+// UploadLink para queries y mutations
+const uploadLink = new UploadHttpLink({
+  uri: HTTP_URL,
+  credentials: "include",
+});
+
+// const httpLink = new HttpLink({
+//   uri: HTTP_URL,
+// });
+
+// AuthLink para añadir el token
+const authLink = new SetContextLink((prevContext) => {
+  const token = localStorage.getItem("accessToken");
+  return {
+    headers: {
+      ...prevContext.headers,
+      Authorization: token ? `Bearer ${token}` : "",
+    },
+  };
+});
+
+// ErrorLink con refresco automático de token
+const errorLink = new ErrorLink(({ error, operation, forward }) => {
+  // ✅ Manejo de errores GraphQL usando CombinedGraphQLErrors
+  if (CombinedGraphQLErrors.is(error)) {
+    error.errors.forEach(({ message, locations, path, extensions }) => {
+      console.error(
+        `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+      );
+
+      // ✅ Error de autenticación - intentar refresh token
+      if (extensions?.code === "UNAUTHENTICATED") {
+        if (retryCount < maxRetry) {
+          retryCount++;
+
+          return new Observable((observer) => {
+            refreshToken(client)
+              .then((newToken) => {
+                localStorage.setItem(
+                  "accessToken",
+                  newToken.replace("Bearer ", "")
+                );
+
+                // Actualizar headers de la operación
+                operation.setContext(({ headers = {} }) => ({
+                  headers: {
+                    ...headers,
+                    Authorization: newToken,
+                  },
+                }));
+
+                // Reintentar la operación
+                const subscriber = {
+                  next: observer.next.bind(observer),
+                  error: observer.error.bind(observer),
+                  complete: observer.complete.bind(observer),
+                };
+                forward(operation).subscribe(subscriber);
+              })
+              .catch((error: unknown) => {
+                console.error("Failed to refresh token:", error);
+                clearAuthSession();
+                observer.error(error);
+              });
+          });
+        } else {
+          // Máximo de reintentos alcanzado
+          console.warn("Max retries reached for token refresh");
+          retryCount = 0;
+          clearAuthSession();
+        }
+      }
+
+      // ✅ Error específico: refresh token no encontrado
+      if (message === "Refresh token not found") {
+        console.log("Refresh token not found - clearing session");
+        clearAuthSession();
+      }
+
+      // ✅ Error específico: token expirado
+      if (message.includes("expired") || extensions?.code === "TOKEN_EXPIRED") {
+        console.log("Token expired - attempting refresh");
+        clearAuthSession();
+      }
+    });
+  }
+  // ✅ Manejo de errores de protocolo usando CombinedProtocolErrors
+  else if (CombinedProtocolErrors.is(error)) {
+    error.errors.forEach(({ message, extensions }) => {
+      console.error(
+        `[Protocol error]: Message: ${message}, Extensions: ${JSON.stringify(
+          extensions
+        )}`
+      );
+
+      // ✅ Error de autenticación en protocolo
+      if (extensions?.code === "UNAUTHENTICATED") {
+        if (retryCount < maxRetry) {
+          retryCount++;
+
+          return new Observable((observer) => {
+            refreshToken(client)
+              .then((newToken) => {
+                localStorage.setItem(
+                  "accessToken",
+                  newToken.replace("Bearer ", "")
+                );
+
+                // Actualizar headers de la operación
+                operation.setContext(({ headers = {} }) => ({
+                  headers: {
+                    ...headers,
+                    Authorization: newToken,
+                  },
+                }));
+
+                // Reintentar la operación
+                const subscriber = {
+                  next: observer.next.bind(observer),
+                  error: observer.error.bind(observer),
+                  complete: observer.complete.bind(observer),
+                };
+                forward(operation).subscribe(subscriber);
+              })
+              .catch((error: unknown) => {
+                console.error("Error refreshing token:", error);
+                clearAuthSession();
+                observer.error(error);
+              });
+          });
+        } else {
+          // Máximo de reintentos alcanzado
+          retryCount = 0;
+          clearAuthSession();
+        }
+      }
+
+      // ✅ Error específico: refresh token no encontrado
+      if (message === "Refresh token not found") {
+        console.log("Refresh token not found - clearing session");
+        clearAuthSession();
+      }
+    });
+  }
+  // ✅ Manejo de errores de red
+  else {
+    console.error(`[Network error]: ${error}`);
+
+    // Reset retry count en caso de errores de red
+    if (retryCount > 0) {
+      retryCount = 0;
+    }
+
+    // ✅ Manejo específico según el tipo de error de red
+    if (error?.stack?.includes("401")) {
+      console.log("Network 401 error - clearing session");
+      clearAuthSession();
+    }
+
+    if (error?.stack?.includes("500")) {
+      console.error("Server error - please try again later");
+    }
+  }
+});
+
+// SplitLink para separar subscripciones de queries/mutations
+// const splitLink = ApolloLink.split(
+//   ({ query }) => {
+//     const definition = getMainDefinition(query);
+//     return (
+//       definition.kind === "OperationDefinition" &&
+//       definition.operation === "subscription"
+//     );
+//   },
+//   // wsLinkV3,
+//   ApolloLink.from([errorLink, authLink, httpLink])
+// );
+
+const client = new ApolloClient({
+  link: ApolloLink.from([errorLink, authLink, uploadLink]),
+  cache: new InMemoryCache(),
+});
+
+export default client;
+
+//------------------------ VERSION 1 ------------------------------
 // //Configuracion de apollo client.
 // //recordemos que en el back manejamos graphql con autenticacion
 // //JWT y WebSockets.
@@ -16,7 +277,7 @@
 // import { useUserStore } from "./stores/userStore";
 // import { connect } from "http2";
 // import { WebSocketLink } from "@apollo/client/link/ws";
-// import { SetContextLink} from "@apollo/client/link/context";
+// import { SetContextLink } from "@apollo/client/link/context";
 // import { ErrorLink } from "@apollo/client/link/error";
 
 // //ejecuta la mutacion para obtener nuevo token
@@ -197,59 +458,111 @@
 
 // export default client;
 
-import {
-  ApolloClient,
-  InMemoryCache,
-  HttpLink,
-  ApolloLink,
-} from "@apollo/client";
-import { ErrorLink } from "@apollo/client/link/error";
-import { SetContextLink } from "@apollo/client/link/context";
-import {
-  CombinedGraphQLErrors,
-  CombinedProtocolErrors,
-} from "@apollo/client/errors";
+// ----------- VERSION 2 -----------
+// import {
+//   ApolloClient,
+//   InMemoryCache,
+//   HttpLink,
+//   ApolloLink,
+// } from "@apollo/client";
+// import { ErrorLink } from "@apollo/client/link/error";
+// import { SetContextLink } from "@apollo/client/link/context";
+// import {
+//   CombinedGraphQLErrors,
+//   CombinedProtocolErrors,
+// } from "@apollo/client/errors";
 
-const httpLink = new HttpLink({
-  uri: import.meta.env.VITE_GRAPHQL_HTTP_URL || "http://localhost:3000/graphql",
-});
-console.log(httpLink);
+// const httpLink = new HttpLink({
+//   uri: import.meta.env.VITE_GRAPHQL_HTTP_URL || "http://localhost:3000/graphql",
+// });
 
-const authLink = new SetContextLink((prevContext) => {
-  const token = localStorage.getItem("accessToken");
-  return {
-    headers: {
-      ...prevContext.headers,
-      Authorization: token ? `Bearer ${token}` : "",
-    },
-  };
-});
+// const authLink = new SetContextLink((prevContext) => {
+//   const token = localStorage.getItem("accessToken");
+//   return {
+//     headers: {
+//       ...prevContext.headers,
+//       Authorization: token ? `Bearer ${token}` : "",
+//     },
+//   };
+// });
 
-const errorLink = new ErrorLink(({ error }) => {
-  if (CombinedGraphQLErrors.is(error)) {
-    error.errors.forEach(({ message, locations, path }) =>
-      console.log(
-        `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
-      )
-    );
-  } else if (CombinedProtocolErrors.is(error)) {
-    error.errors.forEach(({ message, extensions }) =>
-      console.log(
-        `[Protocol error]: Message: ${message}, Extensions: ${JSON.stringify(
-          extensions
-        )}`
-      )
-    );
-  } else {
-    console.error(`[Network error]: ${error}`);
-  }
-});
+// const errorLink = new ErrorLink(({ error }) => {
+//   if (CombinedGraphQLErrors.is(error)) {
+//     error.errors.forEach(({ message, locations, path }) =>
+//       console.log(
+//         `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+//       )
+//     );
+//   } else if (CombinedProtocolErrors.is(error)) {
+//     error.errors.forEach(({ message, extensions }) => {
+//       console.log(
+//         `[Protocol error]: Message: ${message}, Extensions: ${JSON.stringify(
+//           extensions
+//         )}`
+//       );
 
-const link = ApolloLink.from([errorLink, authLink, httpLink]);
-console.log(link, "link");
-const client = new ApolloClient({
-  link: link,
-  cache: new InMemoryCache(),
-});
+//       if (extensions?.code === "UNAUTHENTICATED") {
+//         // Intentar refrescar el token
+//         if (retryCount < maxRetry) {
+//           retryCount++;
+//           return new Observable((observer) => {
+//             refreshToken(client)
+//               .then((newToken) => {
+//                 localStorage.setItem(
+//                   "accessToken",
+//                   newToken.replace("Bearer ", "")
+//                 );
+//                 // Actualizar el header de autorización
+//                 operation.setContext(({ headers = {} }) => ({
+//                   headers: {
+//                     ...headers,
+//                     Authorization: newToken,
+//                   },
+//                 }));
+//                 // Reintentar la operación
+//                 const subscriber = {
+//                   next: observer.next.bind(observer),
+//                   error: observer.error.bind(observer),
+//                   complete: observer.complete.bind(observer),
+//                 };
+//                 forward(operation).subscribe(subscriber);
+//               })
+//               .catch((error) => {
+//                 console.error("Error refreshing token:", error);
+//                 // Limpiar tokens y redirigir al login
+//                 localStorage.removeItem("accessToken");
+//                 localStorage.removeItem("refreshToken");
+//                 // Aquí podrías usar tu store o router para redirigir
+//                 // useUserStore.getState().logout();
+//                 observer.error(error);
+//               });
+//           });
+//         } else {
+//           // Max retries alcanzados, limpiar sesión
+//           retryCount = 0;
+//           localStorage.removeItem("accessToken");
+//           localStorage.removeItem("refreshToken");
+//           // useUserStore.getState().logout();
+//         }
+//       }
+//       if (message === "Refresh token not found") {
+//         console.log("refresh token not found");
+//         useUserStore.setState({
+//           id: undefined,
+//           avatarUrl: null,
+//           fullname: "",
+//           email: "",
+//         });
+//       }
+//     });
+//   } else {
+//     console.error(`[Network error]: ${error}`);
+//   }
+// });
 
-export default client;
+// const client = new ApolloClient({
+//   link: ApolloLink.from([errorLink, authLink, httpLink]),
+//   cache: new InMemoryCache(),
+// });
+
+// export default client;
