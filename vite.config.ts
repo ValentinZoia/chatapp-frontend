@@ -17,5 +17,9 @@ export default defineConfig({
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+    // dedupe: ["@graphql-typed-document-node/core"],
   },
+  // optimizeDeps: {
+  //   include: ["@graphql-typed-document-node/core"],
+  // },
 });

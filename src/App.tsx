@@ -3,6 +3,8 @@ import { Button } from "./components/ui/button";
 import { useQuery } from "@apollo/client/react";
 import { GET_HELLO } from "./graphql/queries/Hello";
 import FindUserById from "./components/find-user-id";
+import { Card, CardHeader, CardTitle, CardContent } from "./components/ui/card";
+import CreateUser from "./components/create-user";
 
 function App() {
   const { loading, error, data } = useQuery<{ hello: string }>(GET_HELLO);
@@ -17,6 +19,15 @@ function App() {
 
       {data && data.hello}
       <FindUserById id={1} />
+      <Card className="w-full max-w-md mx-auto">
+        <CardHeader>
+          <CardTitle>Create Account</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {/* Form */}
+          <CreateUser />
+        </CardContent>
+      </Card>
     </div>
   );
 }
