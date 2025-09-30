@@ -1,0 +1,51 @@
+// Rooms principales con información adicional
+export const FEATURED_ROOMS = [
+  {
+    id: "general",
+    name: "General",
+    description: "Hablá de todo el fútbol argentino",
+    color: "bg-chart-1",
+    members: 1247,
+    active: 89,
+  },
+  {
+    id: "boca",
+    name: "Boca Juniors",
+    description: "La mitad más uno",
+    color: "bg-blue-600",
+    members: 892,
+    active: 67,
+  },
+  {
+    id: "river",
+    name: "River Plate",
+    description: "El más grande",
+    color: "bg-red-600",
+    members: 856,
+    active: 54,
+  },
+  {
+    id: "racing",
+    name: "Racing Club",
+    description: "La Academia",
+    color: "bg-sky-500",
+    members: 423,
+    active: 31,
+  },
+  {
+    id: "independiente",
+    name: "Independiente",
+    description: "Rey de Copas",
+    color: "bg-red-700",
+    members: 398,
+    active: 28,
+  },
+  {
+    id: "san-lorenzo",
+    name: "San Lorenzo",
+    description: "El Ciclón",
+    color: "bg-blue-800",
+    members: 367,
+    active: 24,
+  },
+];
