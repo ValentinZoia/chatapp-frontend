@@ -1,6 +1,13 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { type UserEntity as User } from "../gql/graphql";
+// import { type UserEntity as User } from "../gql/graphql";
+
+interface User {
+  id: number;
+  avatarUrl: string | null;
+  fullname: string;
+  email: string;
+}
 
 interface UserState {
   id: number | undefined;
