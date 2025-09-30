@@ -1,5 +1,5 @@
-// ----------- VERSION 3 -----------
-// Migración a Apollo Client v3 conservando WebSockets, uploads y refresco automático de token
+// ----------------------------------- VERSION 3 ------------------------------
+
 import {
   ApolloClient,
   InMemoryCache,
@@ -8,7 +8,9 @@ import {
   // HttpLink,
 } from "@apollo/client";
 import UploadHttpLink from "apollo-upload-client/UploadHttpLink.mjs";
-// import { getMainDefinition } from "@apollo/client/utilities";
+import { createClient } from "graphql-ws";
+import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
+import { getMainDefinition } from "@apollo/client/utilities";
 import { SetContextLink } from "@apollo/client/link/context";
 import { ErrorLink } from "@apollo/client/link/error";
 // import { WebSocketLink } from "@apollo/client/link/ws";
@@ -17,12 +19,15 @@ import {
   CombinedGraphQLErrors,
   CombinedProtocolErrors,
 } from "@apollo/client/errors";
-
+import { loadDevMessages, loadErrorMessages } from "@apollo/client/dev";
 // Variables de entorno para URLs
 const HTTP_URL =
   import.meta.env.VITE_GRAPHQL_HTTP_URL || "http://localhost:3000/graphql";
-// const WS_URL =
-//   import.meta.env.VITE_GRAPHQL_WS_URL || "ws://localhost:3000/graphql";
+const WS_URL =
+  import.meta.env.VITE_GRAPHQL_WS_URL || "ws://localhost:3000/graphql";
+
+loadDevMessages();
+loadErrorMessages();
 
 // Refresco de token
 async function refreshToken(client) {
@@ -63,6 +68,17 @@ let retryCount = 0;
 const maxRetry = 3;
 
 // WebSocketLink para suscripciones
+const wsLink = new GraphQLWsLink(
+  createClient({
+    url: WS_URL,
+    connectionParams: () => ({
+      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+    }),
+    retryAttempts: Infinity, // reconnect:true
+    shouldRetry: () => true, // opción para reintentar siempre
+  })
+);
+//version vieja
 // const wsLinkV3 = new WebSocketLink({
 //   uri: WS_URL,
 //   options: {
@@ -74,9 +90,13 @@ const maxRetry = 3;
 // });
 
 // UploadLink para queries y mutations
+
 const uploadLink = new UploadHttpLink({
   uri: HTTP_URL,
   credentials: "include",
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
 // const httpLink = new HttpLink({
@@ -239,26 +259,26 @@ const errorLink = new ErrorLink(({ error, operation, forward }) => {
 });
 
 // SplitLink para separar subscripciones de queries/mutations
-// const splitLink = ApolloLink.split(
-//   ({ query }) => {
-//     const definition = getMainDefinition(query);
-//     return (
-//       definition.kind === "OperationDefinition" &&
-//       definition.operation === "subscription"
-//     );
-//   },
-//   // wsLinkV3,
-//   ApolloLink.from([errorLink, authLink, httpLink])
-// );
+const splitLink = ApolloLink.split(
+  ({ query }) => {
+    const definition = getMainDefinition(query);
+    return (
+      definition.kind === "OperationDefinition" &&
+      definition.operation === "subscription"
+    );
+  },
+  wsLink,
+  ApolloLink.from([errorLink, authLink, uploadLink])
+);
 
 const client = new ApolloClient({
-  link: ApolloLink.from([errorLink, authLink, uploadLink]),
+  link: splitLink,
   cache: new InMemoryCache(),
 });
 
 export default client;
 
-//------------------------ VERSION 1 ------------------------------
+//------------------------------------- VERSION 1 ------------------------------
 // //Configuracion de apollo client.
 // //recordemos que en el back manejamos graphql con autenticacion
 // //JWT y WebSockets.
@@ -458,7 +478,7 @@ export default client;
 
 // export default client;
 
-// ----------- VERSION 2 -----------
+// ----------------------------------------- VERSION 2 ---------------------------------------
 // import {
 //   ApolloClient,
 //   InMemoryCache,
