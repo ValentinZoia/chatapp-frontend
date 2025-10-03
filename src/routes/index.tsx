@@ -1,14 +1,15 @@
 import { MainLayout } from "@/layouts/MainLayout";
 import { createBrowserRouter } from "react-router-dom";
 import { Error, Home, ChatRoomPage } from "@/pages";
+import { AuthGuard } from "@/guards";
 // import { AuthGuard } from "@/guards";
 const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      // <AuthGuard>
-      <MainLayout />
-      // </AuthGuard>
+      <AuthGuard>
+        <MainLayout />
+      </AuthGuard>
     ),
     errorElement: <Error />,
     children: [
