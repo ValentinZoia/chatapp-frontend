@@ -1,7 +1,7 @@
 // Rooms principales con información adicional
 export const FEATURED_ROOMS = [
   {
-    id: "general",
+    id: 0,
     name: "General",
     description: "Hablá de todo el fútbol argentino",
     color: "bg-chart-1",
@@ -9,7 +9,7 @@ export const FEATURED_ROOMS = [
     active: 89,
   },
   {
-    id: "boca",
+    id: 1,
     name: "Boca Juniors",
     description: "La mitad más uno",
     color: "bg-blue-600",
@@ -17,7 +17,7 @@ export const FEATURED_ROOMS = [
     active: 67,
   },
   {
-    id: "river",
+    id: 2,
     name: "River Plate",
     description: "El más grande",
     color: "bg-red-600",
@@ -25,7 +25,7 @@ export const FEATURED_ROOMS = [
     active: 54,
   },
   {
-    id: "racing",
+    id: 3,
     name: "Racing Club",
     description: "La Academia",
     color: "bg-sky-500",
@@ -33,7 +33,7 @@ export const FEATURED_ROOMS = [
     active: 31,
   },
   {
-    id: "independiente",
+    id: 4,
     name: "Independiente",
     description: "Rey de Copas",
     color: "bg-red-700",
@@ -41,7 +41,7 @@ export const FEATURED_ROOMS = [
     active: 28,
   },
   {
-    id: "san-lorenzo",
+    id: 5,
     name: "San Lorenzo",
     description: "El Ciclón",
     color: "bg-blue-800",
