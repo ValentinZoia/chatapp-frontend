@@ -13,19 +13,20 @@ import {
   ItemRoomList,
   HomeSidebarHeader,
   SidebarFooterUserInfo,
+  UserRooms,
 } from "@/components/Sidebar/_components";
 
-import type { IRoom } from "@/components/Sidebar/_components/ItemRoomList/ItemRoomList";
+import { Suspense } from "react";
+import type { GetChatroomsForUserQuery } from "@/gql/graphql";
 
-const MAIN_ROOMS: IRoom[] = [
-  { id: "general", name: "General", color: "bg-chart-1" },
-  { id: "boca", name: "Boca Juniors", color: "bg-blue-600" },
-  { id: "river", name: "River Plate", color: "bg-red-600" },
-  { id: "racing", name: "Racing Club", color: "bg-sky-500" },
-  { id: "independiente", name: "Independiente", color: "bg-red-700" },
-  { id: "san-lorenzo", name: "San Lorenzo", color: "bg-blue-800" },
+const MAIN_ROOMS: GetChatroomsForUserQuery["getChatroomsForUser"] = [
+  { id: 0, name: "General" },
+  { id: 1, name: "Boca Juniors" },
+  { id: 2, name: "River Plate" },
+  { id: 3, name: "Racing Club" },
+  { id: 4, name: "Independiente" },
+  { id: 5, name: "San Lorenzo" },
 ];
-const userRooms: { id: string; name: string; color: string }[] = [];
 
 export function AppSidebar() {
   return (
@@ -49,15 +50,11 @@ export function AppSidebar() {
           <ItemRoomList rooms={MAIN_ROOMS} title="Salas Principales" />
         </SidebarGroup>
 
-        {/* Mis Salas (User Created Rooms) */}
-        {userRooms.length > 0 && (
-          <>
-            <SidebarSeparator />
-            <SidebarGroup>
-              <ItemRoomList rooms={userRooms} title="Mis Salas" />
-            </SidebarGroup>
-          </>
-        )}
+        {/* Mis Salas (User Created Rooms) - Suspense */}
+
+        <Suspense fallback={<SidebarSeparator />}>
+          <UserRooms />
+        </Suspense>
 
         {/* Create Room Button */}
         <SidebarGroup>
