@@ -4,34 +4,45 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "../ui/dialog";
+} from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useGeneralStore } from "@/stores/generalStore";
+import { LoginForm } from "../LoginForm";
+import { RegisterForm } from "../RegisterForm";
 
 function LoginModal() {
   const isLoginModalOpen = useGeneralStore((state) => state.isLoginModalOpen);
   const toggleLoginModal = useGeneralStore((state) => state.toggleLoginModal);
-  console.log(isLoginModalOpen, toggleLoginModal);
+  console.log("DESDE EL MODAL", isLoginModalOpen);
+  console.log("me movi?", toggleLoginModal);
+
   return (
     <Dialog onOpenChange={toggleLoginModal} open={isLoginModalOpen}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Iniciar Sesión</DialogTitle>
+          <DialogTitle>Bienvenido</DialogTitle>
           <DialogDescription>
-            Ingresá a tu cuenta para acceder al chat
+            Iniciá sesión o creá una cuenta para acceder al chat
           </DialogDescription>
         </DialogHeader>
-        <div className="flex items-center justify-center py-8">
-          <div className="rounded-lg border border-dashed border-border bg-muted p-8 text-center">
-            <p className="text-sm text-muted-foreground">
-              El usuario implementará el formulario de login aquí
-            </p>
-            <p className="mt-2 text-xs text-muted-foreground">
-              Este es un placeholder para el diseño del modal
-            </p>
-          </div>
-        </div>
+
+        <Tabs defaultValue="login" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="login">Iniciar Sesión</TabsTrigger>
+            <TabsTrigger value="register">Registrarse</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="login" className="mt-4">
+            <LoginForm />
+          </TabsContent>
+
+          <TabsContent value="register" className="mt-4">
+            <RegisterForm />
+          </TabsContent>
+        </Tabs>
       </DialogContent>
     </Dialog>
   );
 }
+
 export default LoginModal;
