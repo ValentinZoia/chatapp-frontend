@@ -3,7 +3,7 @@ import { gql } from "@apollo/client";
 // import { graphql } from "@/gql";
 
 //V1
-export const GET_USER_BY_ID = gql`
+export const FIND_USER_BY_ID = gql`
   query FindUserById($id: Int!) {
     findUserById(id: $id) {
       id
