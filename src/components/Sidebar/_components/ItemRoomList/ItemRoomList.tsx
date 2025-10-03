@@ -4,18 +4,14 @@ import {
   SidebarMenu,
 } from "@/components/ui/sidebar";
 import { ItemRoom } from "../ItemRoom";
+import type { GetChatroomsForUserQuery } from "@/gql/graphql";
 
-export interface IRoom {
-  id: string;
-  name: string;
-  color: string;
-  description?: string;
-  members?: number;
-  active?: number;
-  image?: string;
+interface Props {
+  rooms: GetChatroomsForUserQuery["getChatroomsForUser"];
+  title: string;
 }
 
-function ItemRoomList({ rooms, title }: { rooms: IRoom[]; title: string }) {
+function ItemRoomList({ rooms, title }: Props) {
   return (
     <>
       <SidebarGroupLabel>{title}</SidebarGroupLabel>

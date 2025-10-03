@@ -1,8 +1,12 @@
 import { SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
+import type { GetChatroomsForUserQuery } from "@/gql/graphql";
 import { Link, useLocation } from "react-router-dom";
-import type { IRoom } from "../ItemRoomList/ItemRoomList";
 
-function ItemRoom({ room }: { room: IRoom }) {
+function ItemRoom({
+  room,
+}: {
+  room: GetChatroomsForUserQuery["getChatroomsForUser"][number];
+}) {
   const location = useLocation();
   return (
     <SidebarMenuItem>
@@ -11,7 +15,7 @@ function ItemRoom({ room }: { room: IRoom }) {
         isActive={location.pathname === `/room/${room.id}`}
       >
         <Link to={`/room/${room.id}`}>
-          <div className={`h-2 w-2 rounded-full ${room.color}`} />
+          <div className={`h-2 w-2 rounded-full`} />
           <span>{room.name}</span>
         </Link>
       </SidebarMenuButton>

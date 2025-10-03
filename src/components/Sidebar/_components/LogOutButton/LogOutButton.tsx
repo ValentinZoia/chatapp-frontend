@@ -1,11 +1,12 @@
 import { Button } from "@/components/ui/button";
-import { LogOut } from "lucide-react";
+import { useAuthMutations } from "@/data/Auth/useAuthMutations";
+
+import { LoaderCircle, LogOut } from "lucide-react";
 
 function LogOutButton() {
-  const handleLogout = () => {
-    // if (logout) {
-    //   logout()
-    // }
+  const { logout, logoutLoading } = useAuthMutations();
+  const handleLogout = async () => {
+    await logout();
     console.log("logout");
   };
 
@@ -16,8 +17,13 @@ function LogOutButton() {
       className="h-8 w-8 shrink-0"
       onClick={handleLogout}
       title="Cerrar sesión"
+      disabled={logoutLoading}
     >
-      <LogOut className="h-4 w-4" />
+      {logoutLoading ? (
+        <LoaderCircle className="h-4 w-4 animate-spin" />
+      ) : (
+        <LogOut className="h-4 w-4" />
+      )}
     </Button>
   );
 }
