@@ -12,19 +12,18 @@ interface AuthGuardProps {
 }
 
 export function AuthGuard({ children }: AuthGuardProps) {
-  const userId = useUserStore((state) => state.id);
+  const userId = useUserStore((state) => state);
+  console.log(userId);
   const toggleLoginModal = useGeneralStore((state) => state.toggleLoginModal);
   // const location = useLocation()
 
   useEffect(() => {
-    if (!userId) {
+    if (!userId.id) {
+      console.log("habrete sesamo");
       toggleLoginModal();
+      console.log("deberia haberse ejecutado");
     }
   }, [userId, toggleLoginModal]);
-
-  if (!userId) {
-    return null;
-  }
 
   return <>{children}</>;
 }
