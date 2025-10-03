@@ -7,7 +7,6 @@ function ButtonCreateRoom() {
     (state) => state.toggleCreateRoomModal
   );
   const handleCreateRoom = () => {
-    console.log("sala creada");
     if (toggleCreateRoomModal) {
       toggleCreateRoomModal();
     }
