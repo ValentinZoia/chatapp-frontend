@@ -124,7 +124,7 @@ export function useChatroom() {
   }, [chatroomInfo, userId]);
 
   return {
-    infoChartoom: chatroomInfo?.getChatroomById || {},
+    infoChatroom: chatroomInfo?.getChatroomById || {},
     chatroomId,
     userId,
     messages,
