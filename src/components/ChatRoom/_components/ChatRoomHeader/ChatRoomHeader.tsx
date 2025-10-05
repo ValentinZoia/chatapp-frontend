@@ -1,7 +1,7 @@
 import { BadgeUsersActives } from "@/components/BadgeUsersActives";
 // import type { IRoom } from "@/components/Sidebar/_components/ItemRoomList/ItemRoomList";
 import { Button } from "@/components/ui/button";
-import type { ChatroomEntity } from "@/gql/graphql";
+import type { GetUsersOfChatroomQuery } from "@/gql/graphql";
 import { ArrowLeft, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import { UserAvatarGroup } from "../UserAvatarGroup";
@@ -10,7 +10,7 @@ function ChatRoomHeader({
   roomInfo,
   liveUsers,
 }: {
-  roomInfo: ChatroomEntity | undefined;
+  roomInfo: GetUsersOfChatroomQuery["getChatroomById"] | undefined;
   liveUsers: number;
 }) {
   return (
