@@ -13,8 +13,6 @@ import { RegisterForm } from "../RegisterForm";
 function LoginModal() {
   const isLoginModalOpen = useGeneralStore((state) => state.isLoginModalOpen);
   const toggleLoginModal = useGeneralStore((state) => state.toggleLoginModal);
-  console.log("DESDE EL MODAL", isLoginModalOpen);
-  console.log("me movi?", toggleLoginModal);
 
   return (
     <Dialog onOpenChange={toggleLoginModal} open={isLoginModalOpen}>
