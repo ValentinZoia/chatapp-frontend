@@ -11,6 +11,7 @@ import { useTypingIndicator } from "@/hooks/useTypingIndicator";
 
 function ChatRoomContent() {
   const {
+    infoChartoom,
     chatroomId,
     userId,
     messages,
@@ -57,7 +58,7 @@ function ChatRoomContent() {
   return (
     <div className="flex h-full flex-col">
       {/* Room Header */}
-      <ChatRoomHeader liveUsers={liveUsers.length} />
+      <ChatRoomHeader liveUsers={liveUsers.length} roomInfo={infoChartoom} />
 
       {/* Chat Messages */}
       <ChatArea
