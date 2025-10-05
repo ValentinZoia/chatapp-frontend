@@ -8,7 +8,7 @@ import {
 import type { UserEntity } from "@/gql/graphql";
 
 interface UserAvatarGroupProps {
-  users: UserEntity[];
+  users: Partial<UserEntity>[];
   maxDisplay?: number;
 }
 
@@ -36,7 +36,7 @@ function UserAvatarGroup({ users, maxDisplay = 6 }: UserAvatarGroupProps) {
         >
           {displayUsers.map((user, index) => (
             <Avatar
-              key={user.id}
+              key={user?.id}
               className="border-2 border-background transition-transform hover:scale-110 hover:z-10"
               style={{
                 marginLeft: index > 0 ? "-0.75rem" : "0",
@@ -44,10 +44,12 @@ function UserAvatarGroup({ users, maxDisplay = 6 }: UserAvatarGroupProps) {
               }}
             >
               <AvatarImage
-                src={user.avatarUrl || "/placeholder.svg"}
-                alt={user.fullname}
+                src={user?.avatarUrl || "/placeholder.svg"}
+                alt={user?.fullname}
               />
-              <AvatarFallback>{getInitials(user.fullname)}</AvatarFallback>
+              <AvatarFallback>
+                {getInitials(user?.fullname || "")}
+              </AvatarFallback>
             </Avatar>
           ))}
           {remainingCount > 0 && (
@@ -75,19 +77,19 @@ function UserAvatarGroup({ users, maxDisplay = 6 }: UserAvatarGroupProps) {
           <div className="max-h-64 overflow-y-auto">
             {users.map((user) => (
               <div
-                key={user.id}
+                key={user?.id}
                 className="flex items-center gap-3 p-2 rounded-md hover:bg-accent transition-colors"
               >
                 <Avatar className="w-8 h-8">
                   <AvatarImage
-                    src={user.avatarUrl || "/placeholder.svg"}
-                    alt={user.fullname}
+                    src={user?.avatarUrl || "/placeholder.svg"}
+                    alt={user?.fullname}
                   />
                   <AvatarFallback className="text-xs">
-                    {getInitials(user.fullname)}
+                    {getInitials(user?.fullname || "")}
                   </AvatarFallback>
                 </Avatar>
-                <span className="text-sm font-medium">{user.fullname}</span>
+                <span className="text-sm font-medium">{user?.fullname}</span>
               </div>
             ))}
           </div>
