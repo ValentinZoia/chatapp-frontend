@@ -40,13 +40,8 @@ function AddMembersStep({
   const handleSelect = (value: string, label: string) => {
     setSearchValue(label);
     if (selectedUsers.includes(value)) {
-      console.log(
-        "NOSOTROS",
-        selectedUsers.filter((id) => id !== value)
-      );
       onSelectUser(selectedUsers.filter((id) => id !== value));
     } else {
-      console.log("NOSOTROSS", [...selectedUsers, value]);
       onSelectUser([...selectedUsers, value]);
     }
   };
