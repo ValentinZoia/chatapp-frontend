@@ -48,7 +48,7 @@ async function refreshToken(client) {
   }
 }
 
-function clearAuthSession() {
+export function clearAuthSession() {
   localStorage.removeItem("accessToken");
   localStorage.removeItem("refreshToken");
 
@@ -125,6 +125,7 @@ const errorLink = new ErrorLink(({ error, operation, forward }) => {
 
       // ✅ Error de autenticación - intentar refresh token
       if (extensions?.code === "UNAUTHENTICATED") {
+        console.log("SE TE VENCIO EL TOKEN");
         if (retryCount < maxRetry) {
           retryCount++;
 
