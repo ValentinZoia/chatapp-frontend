@@ -1,3 +1,4 @@
+import { clearAuthSession } from "@/apolloClient";
 import { Button } from "@/components/ui/button";
 import { useAuthMutations } from "@/data/Auth/useAuthMutations";
 
@@ -7,7 +8,7 @@ function LogOutButton() {
   const { logout, logoutLoading } = useAuthMutations();
   const handleLogout = async () => {
     await logout();
-    console.log("logout");
+    clearAuthSession();
   };
 
   return (
