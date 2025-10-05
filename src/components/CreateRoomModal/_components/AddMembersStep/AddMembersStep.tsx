@@ -8,14 +8,16 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
+  CommandList,
 } from "@/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Check, X } from "lucide-react";
+import { Check, ChevronsUpDown, X } from "lucide-react";
 import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 interface AddMembersStepProps {
   searchResults: Array<{ label: string; value: string }>;
@@ -35,10 +37,16 @@ function AddMembersStep({
   const [open, setOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
 
-  const handleSelect = (value: string) => {
+  const handleSelect = (value: string, label: string) => {
+    setSearchValue(label);
     if (selectedUsers.includes(value)) {
+      console.log(
+        "NOSOTROS",
+        selectedUsers.filter((id) => id !== value)
+      );
       onSelectUser(selectedUsers.filter((id) => id !== value));
     } else {
+      console.log("NOSOTROSS", [...selectedUsers, value]);
       onSelectUser([...selectedUsers, value]);
     }
   };
@@ -55,7 +63,8 @@ function AddMembersStep({
     <div className="space-y-4">
       <div className="space-y-2">
         <Label>Add Members</Label>
-        <Popover open={open} onOpenChange={setOpen}>
+
+        {/* <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <Button
               variant="outline"
@@ -79,25 +88,63 @@ function AddMembersStep({
                   onSearchChange(value);
                 }}
               />
-              <CommandEmpty>No users found.</CommandEmpty>
+
               <CommandGroup className="max-h-64 overflow-auto">
-                {searchResults.map((user) => (
-                  <CommandItem
-                    key={user.value}
-                    value={user.value}
-                    onSelect={() => handleSelect(user.value)}
-                  >
-                    <Check
-                      className={`mr-2 h-4 w-4 ${
-                        selectedUsers.includes(user.value)
-                          ? "opacity-100"
-                          : "opacity-0"
-                      }`}
-                    />
-                    {user.label}
-                  </CommandItem>
-                ))}
+                <p>muy bueno</p>
+                {searchResults &&
+                  searchResults.map((user) => (
+                    <>
+                      <p>Naheee</p> <h1>{user.label}</h1>
+                    </>
+                  ))}
+                {!searchResults && <h1>No se encontraron resultados</h1>}
+
+                <CommandEmpty>No users found.</CommandEmpty>
               </CommandGroup>
+            </Command>
+          </PopoverContent>
+        </Popover> */}
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              role="combobox"
+              aria-expanded={open}
+              className="w-full justify-between bg-transparent"
+            >
+              {searchValue || "Buscar usuario..."}
+              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-full p-0" align="start">
+            <Command>
+              <CommandInput
+                placeholder="Buscar usuario..."
+                onValueChange={onSearchChange}
+                disabled={loading}
+              />
+              <CommandList>
+                <CommandEmpty>No se encontraron usuarios.</CommandEmpty>
+                <CommandGroup>
+                  {searchResults.map((user, index) => (
+                    <CommandItem
+                      key={`${user.label}-${index}`}
+                      value={user.label}
+                      onSelect={() => handleSelect(user.value, user.label)}
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          searchValue === user.label
+                            ? "opacity-100"
+                            : "opacity-0"
+                        )}
+                      />
+                      {user.label}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
             </Command>
           </PopoverContent>
         </Popover>
