@@ -9,6 +9,7 @@ function UserRooms() {
   const { data: userRooms, error } = useGetChatroomsForUser(userId as number);
   if (error) {
     console.log(error);
+    return null;
   }
 
   return (
