@@ -1,5 +1,6 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import type { IMessage } from "@/data/Chatrooms/useGetMessagesForChatroom";
+import { formatTime } from "@/lib/utils";
 
 interface Props {
   msg: IMessage | null | undefined;
@@ -24,7 +25,9 @@ function Message({ msg, isOwn }: Props) {
           <span className="text-sm font-medium text-foreground">
             {msg.user?.fullname}
           </span>
-          <span className="text-xs text-muted-foreground">{msg.createdAt}</span>
+          <span className="text-xs text-muted-foreground">
+            {formatTime(msg.createdAt)}
+          </span>
         </div>
         <div
           className={`rounded-lg px-4 py-2 ${
