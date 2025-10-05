@@ -1,10 +1,6 @@
 import { HomeContent } from "@/components/Home/_components";
 
 function Home() {
-  // const { loading, error, data } = useQuery<{ hello: string }>(GET_HELLO);
-  // if (loading) return <p>Loading...</p>;
-  // if (error) return <p>Error : {error.message}</p>;
-  // console.log(data);
   return (
     <div className="flex h-full flex-col overflow-hidden">
       {/* Header */}

@@ -34,12 +34,10 @@ function RegisterForm() {
     register,
     registerError: error,
     registerLoading: loading,
-    registerData,
   } = useAuthMutations();
   if (error) {
     console.error(error);
   }
-  console.log(registerData);
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
@@ -53,7 +51,6 @@ function RegisterForm() {
           avatarUrl: user?.avatarUrl || null,
         });
         setIsLoginOpen();
-        console.log("Register exitoso");
       }
     } catch (err) {
       // Error handled by useMutation

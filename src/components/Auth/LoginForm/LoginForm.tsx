@@ -34,12 +34,10 @@ function LoginForm() {
     login,
     loginError: error,
     loginLoading: loading,
-    loginData,
   } = useAuthMutations();
   if (error) {
     console.error(error);
   }
-  console.log(loginData);
 
   const onSubmit = async (data: LoginFormData) => {
     try {
@@ -53,7 +51,6 @@ function LoginForm() {
           avatarUrl: user.avatarUrl || null,
         });
         setIsLoginOpen();
-        console.log("Login exitoso");
       }
     } catch (err) {
       // Error handled by useMutation

@@ -11,7 +11,7 @@ interface AuthGuardProps {
 
 export function AuthGuard({ children }: AuthGuardProps) {
   const userId = useUserStore((state) => state);
-  console.log(userId);
+
   const toggleLoginModal = useGeneralStore((state) => state.toggleLoginModal);
 
   useEffect(() => {

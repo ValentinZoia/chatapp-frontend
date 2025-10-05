@@ -5,7 +5,7 @@ import {
 } from "@/data/Chatrooms/useGetMessagesForChatroom";
 import { useLiveUsersSubscriptions } from "@/data/Chatrooms/useLiveUsersSubscriptions";
 import { useMessagesSubscriptions } from "@/data/Chatrooms/useMessagesSubscriptions";
-import { useGetUsersOfChatroom } from "@/data/Users/useGetUsersOfChatroom";
+import { useGetUsersAndChatroomInfo } from "@/data/Users/useGetUsersOfChatroom";
 import type {
   // GetMessagesForChatroomQuery,
   // NewMessageSubscription,
@@ -25,10 +25,13 @@ export function useChatroom() {
   const chatroomId = parseInt(roomId!);
   const userId = useUserStore((state) => state.id);
 
+  //Traer los mensajes de la chatroom
   const { data: messagesData } = useGetMessagesForChatroom(chatroomId);
 
-  const { data: usersData } = useGetUsersOfChatroom(chatroomId);
+  // Traer los usuarios de la chatroom
+  const { data: chatroomInfo } = useGetUsersAndChatroomInfo(chatroomId);
 
+  // Traer los usuarios en vivo
   const { liveUsersData, liveUsersLoading } =
     useLiveUsersSubscriptions(chatroomId);
 
@@ -71,6 +74,10 @@ export function useChatroom() {
   // Update messages
   useEffect(() => {
     if (messagesData?.getMessagesForChatroom) {
+      // if (messagesData.getMessagesForChatroom[0].chatroom) {
+      //   console.log(messagesData.getMessagesForChatroom[0].chatroom);
+      //   setInfoChatroom(messagesData.getMessagesForChatroom[0].chatroom);
+      // }
       const uniqueMessages = Array.from(
         new Set(messagesData.getMessagesForChatroom.map((m) => m.id))
       )
@@ -102,24 +109,26 @@ export function useChatroom() {
   // Update live users
   useEffect(() => {
     if (liveUsersData?.liveUsersInChatroom) {
+      console.log("liveUsers", liveUsersData.liveUsersInChatroom);
       setLiveUsers(liveUsersData.liveUsersInChatroom);
     }
   }, [liveUsersData]);
 
   // Check if user is part of chatroom
   useEffect(() => {
-    if (usersData?.getUsersOfChatroom) {
+    if (chatroomInfo?.getUsersOfChatroom) {
       setIsUserPartOfChatroom(
-        usersData.getUsersOfChatroom.some((user) => user.id === userId)
+        chatroomInfo.getUsersOfChatroom.some((user) => user.id === userId)
       );
     }
-  }, [usersData, userId]);
+  }, [chatroomInfo, userId]);
 
   return {
+    infoChartoom: chatroomInfo?.getChatroomById || {},
     chatroomId,
     userId,
     messages,
-    users: usersData?.getUsersOfChatroom || [],
+    users: chatroomInfo?.getUsersOfChatroom || [],
     liveUsers,
     liveUsersLoading,
     isUserPartOfChatroom,
