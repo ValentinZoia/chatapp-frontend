@@ -10,7 +10,7 @@ const chatroomSchema = z.object({
 });
 
 export type ChatroomFormData = z.infer<typeof chatroomSchema>;
-
+export type IRoom = CreateChatroomMutation["createChatroom"];
 export function useCreateChatroom() {
   const [newlyCreatedChatroom, setNewlyCreatedChatroom] = useState<
     CreateChatroomMutation["createChatroom"] | null
