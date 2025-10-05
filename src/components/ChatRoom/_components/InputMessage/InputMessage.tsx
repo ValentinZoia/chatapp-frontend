@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
+// import { Separator } from "@/components/ui/separator";
 import { TypingIndicator } from "../TypingIndicator";
 import { Send, Image } from "lucide-react";
 import { useEffect } from "react";
@@ -44,7 +44,7 @@ function InputMessage({
 
   return (
     <div className="border-t border-border bg-card p-4">
-      <Separator />
+      {/* <Separator /> */}
       <div className="relative p-4">
         <TypingIndicator typingUsers={typingUsers} />
 
@@ -62,7 +62,7 @@ function InputMessage({
               <Image className="h-4 w-4" />
             </Button>
           </div>
-          <form onSubmit={handleSendMessage} className="flex gap-2">
+          <form onSubmit={handleSendMessage} className="flex-1 flex gap-2">
             <Input
               placeholder="Escribí tu mensaje..."
               onKeyDown={handleUserStartedTyping}
