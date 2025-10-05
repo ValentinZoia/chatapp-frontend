@@ -11,7 +11,7 @@ interface ChatAreaProps {
 
 function ChatArea({ messages, currentUserId }: ChatAreaProps) {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
-  console.log(currentUserId);
+
   const scrollToBottom = () => {
     if (scrollAreaRef.current) {
       scrollAreaRef.current.scrollTo({
@@ -43,7 +43,9 @@ function ChatArea({ messages, currentUserId }: ChatAreaProps) {
           ))
         ) : (
           <>
-            <p>No hay mensajes Todavia. Se el primero en enviar uno!</p>
+            <p className="flex justify-center text-md text-muted-foreground">
+              No hay mensajes Todavia. Se el primero en enviar uno!
+            </p>
           </>
         )}
       </div>
