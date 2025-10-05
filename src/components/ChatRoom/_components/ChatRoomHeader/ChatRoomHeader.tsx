@@ -1,18 +1,21 @@
 import { BadgeUsersActives } from "@/components/BadgeUsersActives";
 // import type { IRoom } from "@/components/Sidebar/_components/ItemRoomList/ItemRoomList";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import type { ChatroomEntity } from "@/gql/graphql";
+import { ArrowLeft, Users } from "lucide-react";
 import { Link } from "react-router-dom";
+import { UserAvatarGroup } from "../UserAvatarGroup";
 // import { Image } from "@/components/Image";
 function ChatRoomHeader({
-  // roomInfo,
+  roomInfo,
   liveUsers,
 }: {
-  // roomInfo: IRoom;
+  roomInfo: ChatroomEntity | undefined;
   liveUsers: number;
 }) {
   return (
     <div className="flex items-center justify-between border-b border-border bg-card px-6 py-4">
+      {/* Flecha, Logo e info de la sala */}
       <div className="flex items-center gap-4">
         <Link to="/">
           <Button variant="ghost" size="icon" className="h-9 w-9">
@@ -42,17 +45,28 @@ function ChatRoomHeader({
           </div>
           <div>
             <h1 className="text-lg font-semibold text-foreground">
-              {/* {roomInfo.name} */}
-              Sala Genrica
+              {roomInfo?.name || "Chatroom"}
             </h1>
-            <p className="text-sm text-muted-foreground">
-              {/* {roomInfo.description} */}
-              Desc Genrica
-            </p>
+            <p className="text-sm text-muted-foreground">Desc Genrica</p>
           </div>
         </div>
       </div>
-      <BadgeUsersActives usersAvtives={liveUsers} />
+      <div className="flex gap-8 items-center">
+        {/* Usuarios del grupo -  en el caso de que sea Privada        */}
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <Users className="h-4 w-4 text-muted-foreground" />
+            <span className="text-sm text-muted-foreground">
+              {roomInfo?.users?.length} miembros
+            </span>
+          </div>
+          <div className="h-4 w-px bg-border" />
+          <UserAvatarGroup users={roomInfo?.users || []} maxDisplay={5} />
+        </div>
+
+        {/* Usuarios online */}
+        <BadgeUsersActives usersAvtives={liveUsers} />
+      </div>
     </div>
   );
 }
