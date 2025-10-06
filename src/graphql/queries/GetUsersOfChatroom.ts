@@ -12,6 +12,10 @@ export const GET_USERS_AND_CHATROOM_INFO = gql`
       id
       name
       adminId
+      access
+      description
+      colorHex
+      image
       users {
         id
         fullname

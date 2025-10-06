@@ -5,6 +5,10 @@ export const GET_CHATROOMS_FOR_USER = gql`
     getChatroomsForUser(userId: $userId) {
       id
       name
+      colorHex
+      image
+      description
+      # Solo el último mensaje
       messages {
         id
         content
@@ -14,6 +18,7 @@ export const GET_CHATROOMS_FOR_USER = gql`
           fullname
         }
       }
+      # Usuarios totales
       users {
         avatarUrl
         id
