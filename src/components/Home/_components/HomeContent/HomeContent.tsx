@@ -1,6 +1,8 @@
 import { GenericStatsCard } from "@/components/GenericStatsCard";
 import { FEATURED_ROOMS } from "@/data/featured-rooms";
 import { RoomsBox } from "../RoomsBox";
+import { Suspense } from "react";
+import { UserRoomBox } from "../UserRoomsBox";
 
 function HomeContent() {
   return (
@@ -28,8 +30,13 @@ function HomeContent() {
           />
         </div>
 
-        {/* Rooms Grid */}
-        <RoomsBox />
+        {/* Public Rooms Grid */}
+        <RoomsBox rooms={FEATURED_ROOMS} title="Salas Principales" />
+
+        {/* User Private Rooms Grid */}
+        <Suspense fallback={<>Cargando...</>}>
+          <UserRoomBox />
+        </Suspense>
       </div>
     </div>
   );
