@@ -1,19 +1,27 @@
-import type { IRoom } from "@/components/Sidebar/_components/ItemRoomList/ItemRoomList";
 import { CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Field } from "../Field";
 
-function RoomCardHeader({ room }: { room: IRoom }) {
+import type { GetUsersOfChatroomQuery } from "@/gql/graphql";
+
+function RoomCardHeader({
+  roomName,
+  roomDescription,
+  children,
+}: {
+  roomName: GetUsersOfChatroomQuery["getChatroomById"]["name"] | undefined;
+  roomDescription: GetUsersOfChatroomQuery["getChatroomById"]["description"];
+  children?: React.ReactNode;
+}) {
   return (
     <CardHeader>
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
-          <Field room={room} />
+          {children}
           <div>
             <CardTitle className="text-lg group-hover:text-primary">
-              {room.name}
+              {roomName}
             </CardTitle>
             <CardDescription className="text-sm">
-              {room.description}
+              {roomDescription}
             </CardDescription>
           </div>
         </div>
