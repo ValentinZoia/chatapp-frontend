@@ -4,10 +4,10 @@ import {
   SidebarMenu,
 } from "@/components/ui/sidebar";
 import { ItemRoom } from "../ItemRoom";
-import type { GetChatroomsForUserQuery } from "@/gql/graphql";
+import type { GetChatroomsForUserSideBarQuery } from "@/gql/graphql";
 
 interface Props {
-  rooms: GetChatroomsForUserQuery["getChatroomsForUser"];
+  rooms: GetChatroomsForUserSideBarQuery["getChatroomsForUser"];
   title: string;
 }
 
