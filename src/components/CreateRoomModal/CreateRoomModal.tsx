@@ -8,14 +8,12 @@ import {
   DialogTitle,
 } from "../ui/dialog";
 import { useGeneralStore } from "@/stores/generalStore";
-import {
-  useCreateChatroom,
-  type ChatroomFormData,
-} from "@/hooks/useCreateChatroom";
+import { useCreateChatroom } from "@/hooks/useCreateChatroom";
 import { useRoomCreationStepper } from "@/hooks/useRoomCreationStepper";
 import { Button } from "../ui/button";
 import { ChevronLeft, UserPlus } from "lucide-react";
 import { AddMembersStep, CreateRoomForm } from "./_components";
+import type { CreateChatroomFormData } from "@/lib/zod-schemas/createChatroomSchema";
 
 function CreateRoomModal() {
   const isCreateRoomModalOpen = useGeneralStore(
@@ -53,7 +51,7 @@ function CreateRoomModal() {
     resetSelection();
   };
 
-  const onCreateRoom = async (data: ChatroomFormData) => {
+  const onCreateRoom = async (data: CreateChatroomFormData) => {
     try {
       await handleCreateChatroom(data);
       goToNextStep();
