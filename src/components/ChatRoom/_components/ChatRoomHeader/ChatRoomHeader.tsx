@@ -5,13 +5,12 @@ import type { GetUsersOfChatroomQuery } from "@/gql/graphql";
 import { ArrowLeft, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import { UserAvatarGroup } from "../UserAvatarGroup";
+import { Field } from "@/components/Home/_components/RoomCard/_components";
 // import { Image } from "@/components/Image";
 function ChatRoomHeader({
   roomInfo,
-  liveUsers,
 }: {
   roomInfo: GetUsersOfChatroomQuery["getChatroomById"] | undefined;
-  liveUsers: number;
 }) {
   return (
     <div className="flex items-center justify-between border-b border-border bg-card px-6 py-4">
@@ -23,31 +22,20 @@ function ChatRoomHeader({
           </Button>
         </Link>
         <div className="flex items-center gap-3">
-          <div
-            className={`h-10 w-10 rounded-lg  flex items-center justify-center`}
-          >
-            <h1>logo</h1>
-            {/* {roomInfo.image ? (
-              <Image
-                src={roomInfo.image}
-                alt={roomInfo.name}
-                width={40}
-                height={40}
-                placeholderSrc="https://placehold.co/30"
-                errorSrc="https://placehold.co/30"
-              /> */}
-            {/* ) : (
-              <span className="text-lg font-bold text-white">
-                {/* {roomInfo.name.charAt(0)} */}
-            {/* S
-              </span> */}
-            {/* )}  */}
-          </div>
+          <Field
+            room={{
+              name: roomInfo?.name,
+              colorHex: roomInfo?.colorHex,
+              image: roomInfo?.image,
+            }}
+          />
           <div>
             <h1 className="text-lg font-semibold text-foreground">
               {roomInfo?.name || "Chatroom"}
             </h1>
-            <p className="text-sm text-muted-foreground">Desc Genrica</p>
+            <p className="text-sm text-muted-foreground">
+              {roomInfo?.description}
+            </p>
           </div>
         </div>
       </div>
@@ -65,7 +53,7 @@ function ChatRoomHeader({
         </div>
 
         {/* Usuarios online */}
-        <BadgeUsersActives usersAvtives={liveUsers} />
+        <BadgeUsersActives chatroomId={roomInfo?.id || 0} />
       </div>
     </div>
   );
