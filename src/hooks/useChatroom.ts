@@ -6,10 +6,11 @@ import {
 import { useLiveUsersSubscriptions } from "@/data/Chatrooms/useLiveUsersSubscriptions";
 import { useMessagesSubscriptions } from "@/data/Chatrooms/useMessagesSubscriptions";
 import { useGetUsersAndChatroomInfo } from "@/data/Users/useGetUsersOfChatroom";
-import type {
+import {
+  ChatroomAccess,
   // GetMessagesForChatroomQuery,
   // NewMessageSubscription,
-  UserEntity,
+  type UserEntity,
 } from "@/gql/graphql";
 
 import { useUserStore } from "@/stores/userStore";
@@ -118,13 +119,15 @@ export function useChatroom() {
   useEffect(() => {
     if (chatroomInfo?.getUsersOfChatroom) {
       setIsUserPartOfChatroom(
-        chatroomInfo.getUsersOfChatroom.some((user) => user.id === userId)
+        chatroomInfo.getChatroomById.access === ChatroomAccess.Public
+          ? true
+          : chatroomInfo.getUsersOfChatroom.some((user) => user.id === userId)
       );
     }
   }, [chatroomInfo, userId]);
 
   return {
-    infoChatroom: chatroomInfo?.getChatroomById || {},
+    infoChatroom: chatroomInfo?.getChatroomById,
     chatroomId,
     userId,
     messages,
