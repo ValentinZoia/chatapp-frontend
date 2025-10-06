@@ -9,6 +9,7 @@ import type {
   LeaveChatroomMutationVariables,
   AddUsersToChatroomMutation,
   AddUsersToChatroomMutationVariables,
+  CreateChatroomInput,
 } from "@/gql/graphql";
 import {
   CREATE_CHATROOM,
@@ -32,8 +33,8 @@ export function useChatroomMutations() {
     CREATE_CHATROOM
   );
 
-  const createChatroom = (input: CreateChatroomMutationVariables) => {
-    return createChatroomMutation({ variables: input });
+  const createChatroom = (createChatroomInput: CreateChatroomInput) => {
+    return createChatroomMutation({ variables: { createChatroomInput } });
   };
 
   //DELETE CHATROOM FEATURE
