@@ -15,7 +15,7 @@ import type { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-
  */
 type Documents = {
     "\n  mutation AddUsersToChatroom($chatroomId: Float!, $userIds: [Float!]!) {\n    addUsersToChatroom(chatroomId: $chatroomId, userIds: $userIds) {\n      name\n      id\n    }\n  }\n": typeof types.AddUsersToChatroomDocument,
-    "\n  mutation CreateChatroom($name: String!) {\n    createChatroom(name: $name) {\n      name\n      id\n    }\n  }\n": typeof types.CreateChatroomDocument,
+    "\n  mutation CreateChatroom($createChatroomInput: CreateChatroomInput!) {\n    createChatroom(createChatroomInput: $createChatroomInput) {\n      name\n      id\n    }\n  }\n": typeof types.CreateChatroomDocument,
     "\n  mutation DeleteChatroom($chatroomId: Float!) {\n    deleteChatroom(chatroomId: $chatroomId)\n  }\n": typeof types.DeleteChatroomDocument,
     "\n  mutation EnterChatroom($chatroomId: Float!) {\n    enterChatroom(chatroomId: $chatroomId)\n  }\n": typeof types.EnterChatroomDocument,
     "\n  mutation LeaveChatroom($chatroomId: Float!) {\n    leaveChatroom(chatroomId: $chatroomId)\n  }\n": typeof types.LeaveChatroomDocument,
@@ -27,9 +27,10 @@ type Documents = {
     "\n  mutation UserStartedTypingMutation($chatroomId: Float!) {\n    userStartedTypingMutation(chatroomId: $chatroomId) {\n      id\n      fullname\n      email\n    }\n  }\n": typeof types.UserStartedTypingMutationDocument,
     "\n  mutation UserStoppedTypingMutation($chatroomId: Float!) {\n    userStoppedTypingMutation(chatroomId: $chatroomId) {\n      id\n      fullname\n      email\n    }\n  }\n": typeof types.UserStoppedTypingMutationDocument,
     "\n  query FindUserById($id: Int!) {\n    findUserById(id: $id) {\n      id\n      fullname\n      email\n    }\n  }\n": typeof types.FindUserByIdDocument,
-    "\n  query GetChatroomsForUser($userId: Float!) {\n    getChatroomsForUser(userId: $userId) {\n      id\n      name\n      messages {\n        id\n        content\n        createdAt\n        user {\n          id\n          fullname\n        }\n      }\n      users {\n        avatarUrl\n        id\n        fullname\n        email\n      }\n    }\n  }\n": typeof types.GetChatroomsForUserDocument,
+    "\n  query GetChatroomsForUser($userId: Float!) {\n    getChatroomsForUser(userId: $userId) {\n      id\n      name\n      colorHex\n      image\n      description\n      # Solo el último mensaje\n      messages {\n        id\n        content\n        createdAt\n        user {\n          id\n          fullname\n        }\n      }\n      # Usuarios totales\n      users {\n        avatarUrl\n        id\n        fullname\n        email\n      }\n    }\n  }\n": typeof types.GetChatroomsForUserDocument,
+    "\n  query GetChatroomsForUserSideBar($userId: Float!) {\n    getChatroomsForUser(userId: $userId) {\n      id\n      name\n      colorHex\n    }\n  }\n": typeof types.GetChatroomsForUserSideBarDocument,
     "\n  query GetMessagesForChatroom($chatroomId: Float!) {\n    getMessagesForChatroom(chatroomId: $chatroomId) {\n      id\n      content\n      imageUrl\n      createdAt\n      user {\n        id\n        fullname\n        email\n        avatarUrl\n      }\n      chatroom {\n        id\n        name\n        users {\n          id\n          fullname\n          email\n          avatarUrl\n        }\n      }\n    }\n  }\n": typeof types.GetMessagesForChatroomDocument,
-    "\n  query GetUsersOfChatroom($chatroomId: Float!) {\n    getUsersOfChatroom(chatroomId: $chatroomId) {\n      id\n      fullname\n      email\n      avatarUrl\n    }\n    getChatroomById(chatroomId: $chatroomId) {\n      id\n      name\n      adminId\n      users {\n        id\n        fullname\n        avatarUrl\n      }\n    }\n  }\n": typeof types.GetUsersOfChatroomDocument,
+    "\n  query GetUsersOfChatroom($chatroomId: Float!) {\n    getUsersOfChatroom(chatroomId: $chatroomId) {\n      id\n      fullname\n      email\n      avatarUrl\n    }\n    getChatroomById(chatroomId: $chatroomId) {\n      id\n      name\n      adminId\n      access\n      description\n      colorHex\n      image\n      users {\n        id\n        fullname\n        avatarUrl\n      }\n    }\n  }\n": typeof types.GetUsersOfChatroomDocument,
     "\n  query Hello {\n    hello\n  }\n": typeof types.HelloDocument,
     "\n  query SearchUsers($fullname: String!) {\n    searchUsers(fullname: $fullname) {\n      id\n      fullname\n      email\n    }\n  }\n": typeof types.SearchUsersDocument,
     "\n  subscription LiveUsersInChatroom($chatroomId: Float!) {\n    liveUsersInChatroom(chatroomId: $chatroomId) {\n      id\n      fullname\n      avatarUrl\n      email\n    }\n  }\n": typeof types.LiveUsersInChatroomDocument,
@@ -39,7 +40,7 @@ type Documents = {
 };
 const documents: Documents = {
     "\n  mutation AddUsersToChatroom($chatroomId: Float!, $userIds: [Float!]!) {\n    addUsersToChatroom(chatroomId: $chatroomId, userIds: $userIds) {\n      name\n      id\n    }\n  }\n": types.AddUsersToChatroomDocument,
-    "\n  mutation CreateChatroom($name: String!) {\n    createChatroom(name: $name) {\n      name\n      id\n    }\n  }\n": types.CreateChatroomDocument,
+    "\n  mutation CreateChatroom($createChatroomInput: CreateChatroomInput!) {\n    createChatroom(createChatroomInput: $createChatroomInput) {\n      name\n      id\n    }\n  }\n": types.CreateChatroomDocument,
     "\n  mutation DeleteChatroom($chatroomId: Float!) {\n    deleteChatroom(chatroomId: $chatroomId)\n  }\n": types.DeleteChatroomDocument,
     "\n  mutation EnterChatroom($chatroomId: Float!) {\n    enterChatroom(chatroomId: $chatroomId)\n  }\n": types.EnterChatroomDocument,
     "\n  mutation LeaveChatroom($chatroomId: Float!) {\n    leaveChatroom(chatroomId: $chatroomId)\n  }\n": types.LeaveChatroomDocument,
@@ -51,9 +52,10 @@ const documents: Documents = {
     "\n  mutation UserStartedTypingMutation($chatroomId: Float!) {\n    userStartedTypingMutation(chatroomId: $chatroomId) {\n      id\n      fullname\n      email\n    }\n  }\n": types.UserStartedTypingMutationDocument,
     "\n  mutation UserStoppedTypingMutation($chatroomId: Float!) {\n    userStoppedTypingMutation(chatroomId: $chatroomId) {\n      id\n      fullname\n      email\n    }\n  }\n": types.UserStoppedTypingMutationDocument,
     "\n  query FindUserById($id: Int!) {\n    findUserById(id: $id) {\n      id\n      fullname\n      email\n    }\n  }\n": types.FindUserByIdDocument,
-    "\n  query GetChatroomsForUser($userId: Float!) {\n    getChatroomsForUser(userId: $userId) {\n      id\n      name\n      messages {\n        id\n        content\n        createdAt\n        user {\n          id\n          fullname\n        }\n      }\n      users {\n        avatarUrl\n        id\n        fullname\n        email\n      }\n    }\n  }\n": types.GetChatroomsForUserDocument,
+    "\n  query GetChatroomsForUser($userId: Float!) {\n    getChatroomsForUser(userId: $userId) {\n      id\n      name\n      colorHex\n      image\n      description\n      # Solo el último mensaje\n      messages {\n        id\n        content\n        createdAt\n        user {\n          id\n          fullname\n        }\n      }\n      # Usuarios totales\n      users {\n        avatarUrl\n        id\n        fullname\n        email\n      }\n    }\n  }\n": types.GetChatroomsForUserDocument,
+    "\n  query GetChatroomsForUserSideBar($userId: Float!) {\n    getChatroomsForUser(userId: $userId) {\n      id\n      name\n      colorHex\n    }\n  }\n": types.GetChatroomsForUserSideBarDocument,
     "\n  query GetMessagesForChatroom($chatroomId: Float!) {\n    getMessagesForChatroom(chatroomId: $chatroomId) {\n      id\n      content\n      imageUrl\n      createdAt\n      user {\n        id\n        fullname\n        email\n        avatarUrl\n      }\n      chatroom {\n        id\n        name\n        users {\n          id\n          fullname\n          email\n          avatarUrl\n        }\n      }\n    }\n  }\n": types.GetMessagesForChatroomDocument,
-    "\n  query GetUsersOfChatroom($chatroomId: Float!) {\n    getUsersOfChatroom(chatroomId: $chatroomId) {\n      id\n      fullname\n      email\n      avatarUrl\n    }\n    getChatroomById(chatroomId: $chatroomId) {\n      id\n      name\n      adminId\n      users {\n        id\n        fullname\n        avatarUrl\n      }\n    }\n  }\n": types.GetUsersOfChatroomDocument,
+    "\n  query GetUsersOfChatroom($chatroomId: Float!) {\n    getUsersOfChatroom(chatroomId: $chatroomId) {\n      id\n      fullname\n      email\n      avatarUrl\n    }\n    getChatroomById(chatroomId: $chatroomId) {\n      id\n      name\n      adminId\n      access\n      description\n      colorHex\n      image\n      users {\n        id\n        fullname\n        avatarUrl\n      }\n    }\n  }\n": types.GetUsersOfChatroomDocument,
     "\n  query Hello {\n    hello\n  }\n": types.HelloDocument,
     "\n  query SearchUsers($fullname: String!) {\n    searchUsers(fullname: $fullname) {\n      id\n      fullname\n      email\n    }\n  }\n": types.SearchUsersDocument,
     "\n  subscription LiveUsersInChatroom($chatroomId: Float!) {\n    liveUsersInChatroom(chatroomId: $chatroomId) {\n      id\n      fullname\n      avatarUrl\n      email\n    }\n  }\n": types.LiveUsersInChatroomDocument,
@@ -83,7 +85,7 @@ export function graphql(source: "\n  mutation AddUsersToChatroom($chatroomId: Fl
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  mutation CreateChatroom($name: String!) {\n    createChatroom(name: $name) {\n      name\n      id\n    }\n  }\n"): (typeof documents)["\n  mutation CreateChatroom($name: String!) {\n    createChatroom(name: $name) {\n      name\n      id\n    }\n  }\n"];
+export function graphql(source: "\n  mutation CreateChatroom($createChatroomInput: CreateChatroomInput!) {\n    createChatroom(createChatroomInput: $createChatroomInput) {\n      name\n      id\n    }\n  }\n"): (typeof documents)["\n  mutation CreateChatroom($createChatroomInput: CreateChatroomInput!) {\n    createChatroom(createChatroomInput: $createChatroomInput) {\n      name\n      id\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -131,7 +133,11 @@ export function graphql(source: "\n  query FindUserById($id: Int!) {\n    findUs
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query GetChatroomsForUser($userId: Float!) {\n    getChatroomsForUser(userId: $userId) {\n      id\n      name\n      messages {\n        id\n        content\n        createdAt\n        user {\n          id\n          fullname\n        }\n      }\n      users {\n        avatarUrl\n        id\n        fullname\n        email\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetChatroomsForUser($userId: Float!) {\n    getChatroomsForUser(userId: $userId) {\n      id\n      name\n      messages {\n        id\n        content\n        createdAt\n        user {\n          id\n          fullname\n        }\n      }\n      users {\n        avatarUrl\n        id\n        fullname\n        email\n      }\n    }\n  }\n"];
+export function graphql(source: "\n  query GetChatroomsForUser($userId: Float!) {\n    getChatroomsForUser(userId: $userId) {\n      id\n      name\n      colorHex\n      image\n      description\n      # Solo el último mensaje\n      messages {\n        id\n        content\n        createdAt\n        user {\n          id\n          fullname\n        }\n      }\n      # Usuarios totales\n      users {\n        avatarUrl\n        id\n        fullname\n        email\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetChatroomsForUser($userId: Float!) {\n    getChatroomsForUser(userId: $userId) {\n      id\n      name\n      colorHex\n      image\n      description\n      # Solo el último mensaje\n      messages {\n        id\n        content\n        createdAt\n        user {\n          id\n          fullname\n        }\n      }\n      # Usuarios totales\n      users {\n        avatarUrl\n        id\n        fullname\n        email\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query GetChatroomsForUserSideBar($userId: Float!) {\n    getChatroomsForUser(userId: $userId) {\n      id\n      name\n      colorHex\n    }\n  }\n"): (typeof documents)["\n  query GetChatroomsForUserSideBar($userId: Float!) {\n    getChatroomsForUser(userId: $userId) {\n      id\n      name\n      colorHex\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -139,7 +145,7 @@ export function graphql(source: "\n  query GetMessagesForChatroom($chatroomId: F
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query GetUsersOfChatroom($chatroomId: Float!) {\n    getUsersOfChatroom(chatroomId: $chatroomId) {\n      id\n      fullname\n      email\n      avatarUrl\n    }\n    getChatroomById(chatroomId: $chatroomId) {\n      id\n      name\n      adminId\n      users {\n        id\n        fullname\n        avatarUrl\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetUsersOfChatroom($chatroomId: Float!) {\n    getUsersOfChatroom(chatroomId: $chatroomId) {\n      id\n      fullname\n      email\n      avatarUrl\n    }\n    getChatroomById(chatroomId: $chatroomId) {\n      id\n      name\n      adminId\n      users {\n        id\n        fullname\n        avatarUrl\n      }\n    }\n  }\n"];
+export function graphql(source: "\n  query GetUsersOfChatroom($chatroomId: Float!) {\n    getUsersOfChatroom(chatroomId: $chatroomId) {\n      id\n      fullname\n      email\n      avatarUrl\n    }\n    getChatroomById(chatroomId: $chatroomId) {\n      id\n      name\n      adminId\n      access\n      description\n      colorHex\n      image\n      users {\n        id\n        fullname\n        avatarUrl\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetUsersOfChatroom($chatroomId: Float!) {\n    getUsersOfChatroom(chatroomId: $chatroomId) {\n      id\n      fullname\n      email\n      avatarUrl\n    }\n    getChatroomById(chatroomId: $chatroomId) {\n      id\n      name\n      adminId\n      access\n      description\n      colorHex\n      image\n      users {\n        id\n        fullname\n        avatarUrl\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
