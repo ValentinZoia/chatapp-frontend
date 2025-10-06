@@ -1,12 +1,14 @@
 import { SidebarGroup, SidebarSeparator } from "@/components/ui/sidebar";
-import { useGetChatroomsForUser } from "@/data/Chatrooms/useGetChatroomsForUser";
 import { useUserStore } from "@/stores/userStore";
 import { ItemRoomList } from "../ItemRoomList";
+import { useGetChatroomsForUserSidebar } from "@/data/Chatrooms/useGetChatroomForUserSidebar";
 
 function UserRooms() {
   const userId = useUserStore((state) => state.id);
 
-  const { data: userRooms, error } = useGetChatroomsForUser(userId as number);
+  const { data: userRooms, error } = useGetChatroomsForUserSidebar(
+    userId as number
+  );
   if (error) {
     console.log(error);
     return null;
