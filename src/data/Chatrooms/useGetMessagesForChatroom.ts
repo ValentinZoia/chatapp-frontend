@@ -15,6 +15,6 @@ export function useGetMessagesForChatroom(chatroomId: number) {
     GetMessagesForChatroomQueryVariables
   >(GET_MESSAGES_FOR_CHATROOM, {
     variables: { chatroomId },
-    skip: !chatroomId, // evita ejecutar si no hay userId
+    // skip: chatroomId == null, // evita ejecutar si no hay categoryId
   });
 }
