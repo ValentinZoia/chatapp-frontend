@@ -1,14 +1,30 @@
-import type { IRoom } from "@/components/Sidebar/_components/ItemRoomList/ItemRoomList";
 import { Image } from "@/components/Image";
-function Field({ room }: { room: IRoom }) {
+import type { GetUsersOfChatroomQuery } from "@/gql/graphql";
+
+interface Props {
+  room: {
+    name: GetUsersOfChatroomQuery["getChatroomById"]["name"];
+    colorHex: GetUsersOfChatroomQuery["getChatroomById"]["colorHex"];
+    image: GetUsersOfChatroomQuery["getChatroomById"]["image"];
+  };
+}
+
+function Field({ room }: Props) {
   return (
     <div
-      className={`flex h-12 w-12 items-center justify-center rounded-lg ${room.color}`}
+      className={`flex h-12 w-12 items-center justify-center rounded-lg`}
+      style={{ backgroundColor: room?.colorHex as string }}
     >
       <Image
-        src={`/escudos/${room.id}.png`}
-        alt={`Escudo de ${room.name}`}
-        className="h-12 w-12"
+        src={
+          room?.image ||
+          `/escudos/${room?.name
+            ?.toLocaleLowerCase()
+            .trim()
+            .replace(/ /g, "")}.png`
+        }
+        alt={`Logo de ${room?.name}`}
+        className="h-12 w-12 rounded-lg"
         lazy={true}
         placeholderSrc="https://placehold.co/30"
         errorSrc="https://placehold.co/30"
