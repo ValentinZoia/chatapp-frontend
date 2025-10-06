@@ -15,7 +15,7 @@ function ChatRoomContent() {
     chatroomId,
     userId,
     messages,
-    liveUsers,
+
     liveUsersLoading,
     isUserPartOfChatroom,
   } = useChatroom();
@@ -58,7 +58,7 @@ function ChatRoomContent() {
   return (
     <div className="flex h-full flex-col">
       {/* Room Header */}
-      <ChatRoomHeader liveUsers={liveUsers.length} roomInfo={infoChatroom} />
+      <ChatRoomHeader roomInfo={infoChatroom} />
 
       {/* Chat Messages */}
       <ChatArea
