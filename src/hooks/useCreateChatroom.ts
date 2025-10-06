@@ -1,15 +1,15 @@
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useChatroomMutations } from "@/data/Chatrooms/useChatroomsMutations";
 import type { CreateChatroomMutation } from "@/gql/graphql";
+import {
+  defaultValues,
+  createChatroomSchema,
+  type CreateChatroomFormData,
+} from "@/lib/zod-schemas/createChatroomSchema";
 
-const chatroomSchema = z.object({
-  name: z.string().min(3, "Name must be at least 3 characters"),
-});
-
-export type ChatroomFormData = z.infer<typeof chatroomSchema>;
 export type IRoom = CreateChatroomMutation["createChatroom"];
 export function useCreateChatroom() {
   const [newlyCreatedChatroom, setNewlyCreatedChatroom] = useState<
@@ -19,18 +19,14 @@ export function useCreateChatroom() {
   const { createChatroom, createChatroomLoading: loading } =
     useChatroomMutations();
 
-  const form = useForm<ChatroomFormData>({
-    resolver: zodResolver(chatroomSchema),
-    defaultValues: {
-      name: "",
-    },
+  const form = useForm<CreateChatroomFormData>({
+    resolver: zodResolver(createChatroomSchema),
+    defaultValues: defaultValues,
   });
 
-  const handleCreateChatroom = async (data: ChatroomFormData) => {
+  const handleCreateChatroom = async (data: CreateChatroomFormData) => {
     try {
-      const response = await createChatroom({
-        name: data.name,
-      });
+      const response = await createChatroom(data);
 
       if (response.data?.createChatroom) {
         setNewlyCreatedChatroom(response.data.createChatroom);
