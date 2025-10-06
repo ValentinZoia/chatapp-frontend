@@ -17,16 +17,7 @@ import {
 } from "@/components/Sidebar/_components";
 
 import { Suspense } from "react";
-import type { GetChatroomsForUserQuery } from "@/gql/graphql";
-
-const MAIN_ROOMS: GetChatroomsForUserQuery["getChatroomsForUser"] = [
-  { id: 0, name: "General" },
-  { id: 1, name: "Boca Juniors" },
-  { id: 2, name: "River Plate" },
-  { id: 3, name: "Racing Club" },
-  { id: 4, name: "Independiente" },
-  { id: 5, name: "San Lorenzo" },
-];
+import { FEATURED_ROOMS } from "@/data/featured-rooms";
 
 export function AppSidebar() {
   return (
@@ -47,7 +38,7 @@ export function AppSidebar() {
 
         {/* Salas Principales */}
         <SidebarGroup>
-          <ItemRoomList rooms={MAIN_ROOMS} title="Salas Principales" />
+          <ItemRoomList rooms={FEATURED_ROOMS} title="Salas Principales" />
         </SidebarGroup>
 
         {/* Mis Salas (User Created Rooms) - Suspense */}
