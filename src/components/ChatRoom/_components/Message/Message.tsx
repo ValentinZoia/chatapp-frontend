@@ -26,7 +26,7 @@ function Message({ msg, isOwn }: Props) {
             {msg.user?.fullname}
           </span>
           <span className="text-xs text-muted-foreground">
-            {formatTime(msg.createdAt)}
+            {msg.createdAt ? formatTime(msg.createdAt) : formatTime(new Date())}
           </span>
         </div>
         <div
