@@ -34,7 +34,7 @@ type Documents = {
     "\n  query Hello {\n    hello\n  }\n": typeof types.HelloDocument,
     "\n  query SearchUsers($fullname: String!) {\n    searchUsers(fullname: $fullname) {\n      id\n      fullname\n      email\n    }\n  }\n": typeof types.SearchUsersDocument,
     "\n  subscription LiveUsersInChatroom($chatroomId: Float!) {\n    liveUsersInChatroom(chatroomId: $chatroomId) {\n      id\n      fullname\n      avatarUrl\n      email\n    }\n  }\n": typeof types.LiveUsersInChatroomDocument,
-    "\n  subscription NewMessage($chatroomId: Int!) {\n    newMessage(chatroomId: $chatroomId) {\n      id\n      content\n      imageUrl\n      createdAt\n      user {\n        id\n        fullname\n        email\n        avatarUrl\n      }\n    }\n  }\n": typeof types.NewMessageDocument,
+    "\n  subscription NewMessage($chatroomId: Int!) {\n    newMessage(chatroomId: $chatroomId) {\n      id\n      content\n      imageUrl\n\n      user {\n        id\n        fullname\n        email\n        avatarUrl\n      }\n    }\n  }\n": typeof types.NewMessageDocument,
     "\n  subscription UserStartedTyping($chatroomId: Float!, $userId: Float!) {\n    userStartedTyping(chatroomId: $chatroomId, userId: $userId) {\n      id\n      fullname\n      email\n      avatarUrl\n    }\n  }\n": typeof types.UserStartedTypingDocument,
     "\n  subscription UserStoppedTyping($chatroomId: Float!, $userId: Float!) {\n    userStoppedTyping(chatroomId: $chatroomId, userId: $userId) {\n      id\n      fullname\n      email\n      avatarUrl\n    }\n  }\n": typeof types.UserStoppedTypingDocument,
 };
@@ -59,7 +59,7 @@ const documents: Documents = {
     "\n  query Hello {\n    hello\n  }\n": types.HelloDocument,
     "\n  query SearchUsers($fullname: String!) {\n    searchUsers(fullname: $fullname) {\n      id\n      fullname\n      email\n    }\n  }\n": types.SearchUsersDocument,
     "\n  subscription LiveUsersInChatroom($chatroomId: Float!) {\n    liveUsersInChatroom(chatroomId: $chatroomId) {\n      id\n      fullname\n      avatarUrl\n      email\n    }\n  }\n": types.LiveUsersInChatroomDocument,
-    "\n  subscription NewMessage($chatroomId: Int!) {\n    newMessage(chatroomId: $chatroomId) {\n      id\n      content\n      imageUrl\n      createdAt\n      user {\n        id\n        fullname\n        email\n        avatarUrl\n      }\n    }\n  }\n": types.NewMessageDocument,
+    "\n  subscription NewMessage($chatroomId: Int!) {\n    newMessage(chatroomId: $chatroomId) {\n      id\n      content\n      imageUrl\n\n      user {\n        id\n        fullname\n        email\n        avatarUrl\n      }\n    }\n  }\n": types.NewMessageDocument,
     "\n  subscription UserStartedTyping($chatroomId: Float!, $userId: Float!) {\n    userStartedTyping(chatroomId: $chatroomId, userId: $userId) {\n      id\n      fullname\n      email\n      avatarUrl\n    }\n  }\n": types.UserStartedTypingDocument,
     "\n  subscription UserStoppedTyping($chatroomId: Float!, $userId: Float!) {\n    userStoppedTyping(chatroomId: $chatroomId, userId: $userId) {\n      id\n      fullname\n      email\n      avatarUrl\n    }\n  }\n": types.UserStoppedTypingDocument,
 };
@@ -161,7 +161,7 @@ export function graphql(source: "\n  subscription LiveUsersInChatroom($chatroomI
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  subscription NewMessage($chatroomId: Int!) {\n    newMessage(chatroomId: $chatroomId) {\n      id\n      content\n      imageUrl\n      createdAt\n      user {\n        id\n        fullname\n        email\n        avatarUrl\n      }\n    }\n  }\n"): (typeof documents)["\n  subscription NewMessage($chatroomId: Int!) {\n    newMessage(chatroomId: $chatroomId) {\n      id\n      content\n      imageUrl\n      createdAt\n      user {\n        id\n        fullname\n        email\n        avatarUrl\n      }\n    }\n  }\n"];
+export function graphql(source: "\n  subscription NewMessage($chatroomId: Int!) {\n    newMessage(chatroomId: $chatroomId) {\n      id\n      content\n      imageUrl\n\n      user {\n        id\n        fullname\n        email\n        avatarUrl\n      }\n    }\n  }\n"): (typeof documents)["\n  subscription NewMessage($chatroomId: Int!) {\n    newMessage(chatroomId: $chatroomId) {\n      id\n      content\n      imageUrl\n\n      user {\n        id\n        fullname\n        email\n        avatarUrl\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
