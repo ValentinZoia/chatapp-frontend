@@ -42,6 +42,11 @@ function InputMessage({
     return () => window.removeEventListener("keypress", handleKeyPress);
   }, []);
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    handleSendMessage();
+  };
+
   return (
     <div className="border-t border-border bg-card p-4">
       {/* <Separator /> */}
@@ -62,7 +67,7 @@ function InputMessage({
               <Image className="h-4 w-4" />
             </Button>
           </div>
-          <form onSubmit={handleSendMessage} className="flex-1 flex gap-2">
+          <form onSubmit={handleSubmit} className="flex-1 flex gap-2">
             <Input
               placeholder="Escribí tu mensaje..."
               onKeyDown={handleUserStartedTyping}
