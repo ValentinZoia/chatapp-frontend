@@ -6,7 +6,6 @@ export const NEW_MESSAGE_SUBSCRIPTION = gql`
       id
       content
       imageUrl
-      createdAt
       user {
         id
         fullname
