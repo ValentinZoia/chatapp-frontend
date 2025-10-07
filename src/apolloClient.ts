@@ -126,9 +126,13 @@ const errorLink = new ErrorLink(({ error, operation, forward }) => {
       // ✅ Error de autenticación - intentar refresh token
       if (extensions?.code === "UNAUTHENTICATED") {
         console.log("SE TE VENCIO EL TOKEN");
+        clearAuthSession(); // por el momento esto
+        return;
         if (retryCount < maxRetry) {
           retryCount++;
-
+          console.log(
+            "Intentando refrescar el token..." + retryCount + "/" + maxRetry
+          );
           return new Observable((observer) => {
             refreshToken(client)
               .then((newToken) => {
