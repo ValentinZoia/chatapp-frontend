@@ -36,7 +36,9 @@ export function useChatroom() {
   const { liveUsersData, liveUsersLoading } =
     useLiveUsersSubscriptions(chatroomId);
 
-  const { newMessageData } = useMessagesSubscriptions({ chatroomId });
+  const { newMessageData } = useMessagesSubscriptions({
+    chatroomId,
+  });
 
   const { enterChatroom, leaveChatroom } = useChatroomMutations();
 
@@ -110,7 +112,6 @@ export function useChatroom() {
   // Update live users
   useEffect(() => {
     if (liveUsersData?.liveUsersInChatroom) {
-      console.log("liveUsers", liveUsersData.liveUsersInChatroom);
       setLiveUsers(liveUsersData.liveUsersInChatroom);
     }
   }, [liveUsersData]);
