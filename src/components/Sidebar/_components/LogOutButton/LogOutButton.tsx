@@ -15,7 +15,7 @@ function LogOutButton() {
     <Button
       variant="ghost"
       size="icon"
-      className="h-8 w-8 shrink-0"
+      className="h-8 w-8 shrink-0 cursor-pointer"
       onClick={handleLogout}
       title="Cerrar sesión"
       disabled={logoutLoading}
