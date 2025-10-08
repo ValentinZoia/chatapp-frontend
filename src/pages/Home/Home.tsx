@@ -1,8 +1,10 @@
 import { HomeContent } from "@/components/Home/_components";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 function Home() {
   return (
     <div className="flex h-full flex-col overflow-hidden">
+      <SidebarTrigger />
       {/* Header */}
       <div className="border-b border-border bg-card px-8 py-6">
         <div className="space-y-2">
