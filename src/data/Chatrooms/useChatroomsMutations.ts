@@ -18,9 +18,10 @@ import {
   LEAVE_CHATROOM,
   ADD_USERS_TO_CHATROOM,
 } from "@/graphql/mutations";
+import { GET_CHATROOMS_FOR_USER } from "@/graphql/queries";
 import { useMutation } from "@apollo/client/react";
 
-export function useChatroomMutations() {
+export function useChatroomMutations(userId?: number) {
   // CREATE CHATROOM FREATURE
   const [
     createChatroomMutation,
@@ -46,11 +47,21 @@ export function useChatroomMutations() {
       data: deleteChatroomData,
     },
   ] = useMutation<DeleteChatroomMutation, DeleteChatroomMutationVariables>(
-    DELETE_CHATROOM
+    DELETE_CHATROOM,
+    {
+      refetchQueries: [
+        { query: GET_CHATROOMS_FOR_USER, variables: { userId } },
+      ], // Cambia '1' por el ID del usuario actual
+    }
   );
 
   const deleteChatroom = (input: DeleteChatroomMutationVariables) => {
-    return deleteChatroomMutation({ variables: input });
+    return deleteChatroomMutation({
+      variables: input,
+      onCompleted: () => {
+        console.log("Chatroom deleted successfully");
+      },
+    });
   };
 
   //ENTER CHATROOM FEATURE
@@ -97,7 +108,7 @@ export function useChatroomMutations() {
     AddUsersToChatroomMutation,
     AddUsersToChatroomMutationVariables
   >(ADD_USERS_TO_CHATROOM, {
-    refetchQueries: ["GetChatroomsForUser"],
+    refetchQueries: [{ query: GET_CHATROOMS_FOR_USER, variables: { userId } }], // Cambia '1' por el ID del usuario actual
   });
 
   const addUsersToChatroom = (input: AddUsersToChatroomMutationVariables) => {
