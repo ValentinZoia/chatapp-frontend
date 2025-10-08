@@ -4,6 +4,8 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
   SidebarSeparator,
 } from "@/components/ui/sidebar";
 
@@ -19,9 +21,9 @@ import {
 import { Suspense } from "react";
 import { FEATURED_ROOMS } from "@/data/featured-rooms";
 
-export function AppSidebar() {
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar>
+    <Sidebar collapsible="offcanvas" variant="sidebar" {...props}>
       <HomeSidebarHeader />
 
       <SidebarContent>
@@ -50,7 +52,13 @@ export function AppSidebar() {
         {/* Create Room Button */}
         <SidebarGroup>
           <SidebarGroupContent>
-            <ButtonCreateRoom />
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip={"Crear Sala"}>
+                  <ButtonCreateRoom />
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
