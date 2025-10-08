@@ -45,7 +45,7 @@ function ChatRoomHeader({
           </div>
         </div>
 
-        {isAdmin && <SettingsPopover />}
+        {isAdmin && <SettingsPopover chatroomId={roomInfo?.id as number} />}
       </div>
       <div className="self-center flex gap-8 items-center">
         {/* Usuarios del grupo -  en el caso de que sea Privada        */}
