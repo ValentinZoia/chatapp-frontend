@@ -26,8 +26,8 @@ function ChatArea({ messages, currentUserId }: ChatAreaProps) {
   }, [messages]);
 
   return (
-    <ScrollArea className="flex-1 p-6" ref={scrollAreaRef}>
-      <div className="space-y-4">
+    <ScrollArea className="flex-1  overflow-auto" ref={scrollAreaRef}>
+      <div className="py-4 px-2 space-y-4">
         {messages && messages.length > 0 ? (
           messages.map((msg) => (
             <div
