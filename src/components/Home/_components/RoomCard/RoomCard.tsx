@@ -9,7 +9,7 @@ interface Props {
 function RoomCard({ roomId, children }: Props) {
   return (
     <Link key={roomId} to={`/room/${roomId}`}>
-      <Card className="group cursor-pointer border-border bg-card transition-all hover:border-primary hover:shadow-lg">
+      <Card className="h-full group cursor-pointer border-border bg-card transition-all hover:border-primary hover:shadow-lg">
         {children}
       </Card>
     </Link>
