@@ -6,46 +6,55 @@ import { ArrowLeft, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import { UserAvatarGroup } from "../UserAvatarGroup";
 import { Field } from "@/components/Home/_components/RoomCard/_components";
+import { useUserStore } from "@/stores/userStore";
+import { SettingsPopover } from "../SettingsPopover";
 // import { Image } from "@/components/Image";
 function ChatRoomHeader({
   roomInfo,
 }: {
   roomInfo: GetUsersOfChatroomQuery["getChatroomById"] | undefined;
 }) {
+  const userId = useUserStore((state) => state.id);
+  const isAdmin = userId === roomInfo?.adminId;
   return (
-    <div className="flex items-center justify-between border-b border-border bg-card px-6 py-4">
+    <div className="flex flex-col gap-2 md:flex-row items-start md:items-center md:justify-between border-b border-border bg-card px-6 py-4">
       {/* Flecha, Logo e info de la sala */}
-      <div className="flex items-center gap-4">
-        <Link to="/">
-          <Button variant="ghost" size="icon" className="h-9 w-9">
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-        </Link>
-        <div className="flex items-center gap-3">
-          <Field
-            room={{
-              name: roomInfo?.name,
-              colorHex: roomInfo?.colorHex,
-              image: roomInfo?.image,
-            }}
-          />
-          <div>
-            <h1 className="text-lg font-semibold text-foreground">
-              {roomInfo?.name || "Chatroom"}
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              {roomInfo?.description}
-            </p>
+      <div className="w-full md:w-fit flex items-center justify-between gap-8">
+        <div className="flex items-center gap-4 ">
+          <Link to="/">
+            <Button variant="ghost" size="icon" className="h-9 w-9">
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+          </Link>
+          <div className="flex items-center gap-3">
+            <Field
+              room={{
+                name: roomInfo?.name,
+                colorHex: roomInfo?.colorHex,
+                image: roomInfo?.image,
+              }}
+            />
+            <div>
+              <h1 className="text-lg font-semibold text-foreground">
+                {roomInfo?.name || "Chatroom"}
+              </h1>
+              <p className="text-sm text-muted-foreground">
+                {roomInfo?.description}
+              </p>
+            </div>
           </div>
         </div>
+
+        {isAdmin && <SettingsPopover />}
       </div>
-      <div className="flex gap-8 items-center">
+      <div className="self-center flex gap-8 items-center">
         {/* Usuarios del grupo -  en el caso de que sea Privada        */}
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <Users className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm text-muted-foreground">
-              {roomInfo?.users?.length} miembros
+            <span className="flex gap-1 text-sm text-muted-foreground">
+              {roomInfo?.users?.length}{" "}
+              <span className="hidden md:block">miembros</span>
             </span>
           </div>
           <div className="h-4 w-px bg-border" />
