@@ -16,7 +16,7 @@ function ButtonCreateRoom() {
     <Button
       onClick={handleCreateRoom}
       variant="outline"
-      className="w-full justify-start gap-3 border-dashed bg-transparent"
+      className="w-full justify-start cursor-pointer gap-3 border-dashed bg-transparent"
     >
       <Plus className="h-4 w-4" />
       <span>Crear Sala</span>
