@@ -30,13 +30,15 @@ function Message({ msg, isOwn }: Props) {
           </span>
         </div>
         <div
-          className={`rounded-lg px-4 py-2 ${
+          className={`rounded-lg px-4 py-2 max-w-[80vw] sm:max-w-[60vw] break-words whitespace-pre-line ${
             isOwn
               ? "bg-primary text-primary-foreground"
               : "bg-muted text-foreground"
           }`}
         >
-          <p className="text-sm">{msg.content}</p>
+          <p className="text-sm break-words whitespace-pre-line">
+            {msg.content}
+          </p>
         </div>
       </div>
     </>
