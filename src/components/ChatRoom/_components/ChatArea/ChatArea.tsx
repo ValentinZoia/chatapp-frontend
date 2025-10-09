@@ -10,43 +10,56 @@ interface ChatAreaProps {
 }
 
 function ChatArea({ messages, currentUserId }: ChatAreaProps) {
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const prevMessagesLength = useRef<number>(messages.length);
 
-  const scrollToBottom = () => {
-    if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTo({
-        top: scrollAreaRef.current.scrollHeight,
-        behavior: "smooth",
-      });
-    }
+  const playSound = () => {
+    const audio = new Audio("/sounds/new-message.mp3");
+    audio.play();
   };
 
+  // Scroll automático al fondo
   useEffect(() => {
-    scrollToBottom();
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   }, [messages]);
 
+  // Sonido al recibir nuevo mensaje
+  useEffect(() => {
+    if (
+      messages.length > prevMessagesLength.current &&
+      !(messages[messages.length - 1]?.user?.id === currentUserId)
+    ) {
+      // Reproducir baudio
+      playSound();
+    }
+    prevMessagesLength.current = messages.length;
+  }, [messages, currentUserId]);
+
   return (
-    <ScrollArea className="flex-1  overflow-auto" ref={scrollAreaRef}>
+    <ScrollArea className="flex-1 overflow-auto">
       <div className="py-4 px-2 space-y-4">
         {messages && messages.length > 0 ? (
-          messages.map((msg) => (
-            <div
-              key={msg?.id}
-              className={`flex gap-3 ${
-                msg?.user?.id === currentUserId
-                  ? "flex-row-reverse"
-                  : "flex-row"
-              }`}
-            >
-              <Message msg={msg} isOwn={msg?.user?.id === currentUserId} />
-            </div>
-          ))
-        ) : (
           <>
-            <p className="flex justify-center text-md text-muted-foreground">
-              No hay mensajes Todavia. Se el primero en enviar uno!
-            </p>
+            {messages.map((msg) => (
+              <div
+                key={msg?.id}
+                className={`flex gap-3 ${
+                  msg?.user?.id === currentUserId
+                    ? "flex-row-reverse"
+                    : "flex-row"
+                }`}
+              >
+                <Message msg={msg} isOwn={msg?.user?.id === currentUserId} />
+              </div>
+            ))}
+            <div ref={messagesEndRef} />
           </>
+        ) : (
+          <p className="flex justify-center text-md text-muted-foreground">
+            No hay mensajes Todavia. Se el primero en enviar uno!
+          </p>
         )}
       </div>
     </ScrollArea>
