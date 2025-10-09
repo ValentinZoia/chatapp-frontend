@@ -6,7 +6,8 @@ import {
 } from "@/components/ui/popover";
 
 import { Settings, Trash, UserRoundPlus } from "lucide-react";
-import { DialogDeleteChatroom } from "../DialogDeleteChatroom";
+
+import { useGeneralStore } from "@/stores/generalStore";
 
 const SETTINGS_ITEMS = [
   { id: 1, icon: <UserRoundPlus />, text: "Agregar Usuarios" },
@@ -34,21 +35,25 @@ function Item({
 }
 
 function SettingsPopover({ chatroomId }: { chatroomId?: number }) {
-  const [open, setOpen] = useState<{ [key: string]: boolean }>({});
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-
+  const toogleDeleteChatroomDialog = useGeneralStore(
+    (state) => state.toggleDeleteChatroomDialog
+  );
+  const toogleAddMembersDialog = useGeneralStore(
+    (state) => state.toggleAddUsersToChatroomDialog
+  );
+  const handleItemClick = (text: string) => {
+    if (text === "Eliminar Sala") {
+      toogleDeleteChatroomDialog();
+    } else if (text === "Agregar Usuarios") {
+      toogleAddMembersDialog();
+    }
+  };
   if (!chatroomId) {
     console.log("no hay");
 
     return null;
   }
-
-  const handleItemClick = (text: string) => {
-    setOpen((prev) => ({
-      ...prev,
-      [text]: !prev[text],
-    }));
-  };
 
   return (
     <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
@@ -75,21 +80,6 @@ function SettingsPopover({ chatroomId }: { chatroomId?: number }) {
             ))}
           </div>
         </div>
-        {/* Ejemplo de uso del estado para cada ítem */}
-        {open["Agregar Usuarios"] && (
-          <div className="mt-2 text-xs text-primary">
-            Modal para agregar usuarios abierto
-          </div>
-        )}
-        {open["Eliminar Sala"] && (
-          <>
-            <DialogDeleteChatroom
-              chatroomId={chatroomId}
-              open
-              onClose={() => handleItemClick("Eliminar Sala")}
-            />
-          </>
-        )}
       </PopoverContent>
     </Popover>
   );
