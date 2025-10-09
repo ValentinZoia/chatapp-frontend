@@ -9,7 +9,6 @@ export const NEW_MESSAGE_SUBSCRIPTION = gql`
       user {
         id
         fullname
-        email
         avatarUrl
       }
     }
