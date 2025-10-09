@@ -29,7 +29,7 @@ export function useChatroom() {
   //Traer los mensajes de la chatroom
   const { data: messagesData } = useGetMessagesForChatroom(chatroomId);
 
-  // Traer los usuarios de la chatroom
+  // Traer los usuarios de la chatroom y la info (name, desc, etc).
   const { data: chatroomInfo } = useGetUsersAndChatroomInfo(chatroomId);
 
   // Traer los usuarios en vivo
@@ -118,11 +118,17 @@ export function useChatroom() {
 
   // Check if user is part of chatroom
   useEffect(() => {
-    if (chatroomInfo?.getUsersOfChatroom) {
+    if (
+      chatroomInfo?.getChatroomById &&
+      userId !== undefined &&
+      chatroomInfo?.getChatroomById.users
+    ) {
       setIsUserPartOfChatroom(
         chatroomInfo.getChatroomById.access === ChatroomAccess.Public
           ? true
-          : chatroomInfo.getUsersOfChatroom.some((user) => user.id === userId)
+          : chatroomInfo.getChatroomById.users.some(
+              (user) => user.id === userId
+            )
       );
     }
   }, [chatroomInfo, userId]);
@@ -132,7 +138,7 @@ export function useChatroom() {
     chatroomId,
     userId,
     messages,
-    users: chatroomInfo?.getUsersOfChatroom || [],
+    // users: chatroomInfo?.getUsersOfChatroom || [],
     liveUsers,
     liveUsersLoading,
     isUserPartOfChatroom,
