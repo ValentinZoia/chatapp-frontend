@@ -1,34 +1,27 @@
 import { useChatroomMutations } from "@/data/Chatrooms/useChatroomsMutations";
-import { useSearchUsers } from "@/data/Users/useSearchUsers";
 import type { UserEntity } from "@/gql/graphql";
-import { useRef, useState } from "react";
+import { useUserStore } from "@/stores/userStore";
+import { useState } from "react";
+import { useDebounce } from "./useDebounce";
+import { useSearchUsers } from "@/data/Users/useSearchUsers";
 
 export function useAddUsersToRoom() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
-  const debounceTimeoutRef = useRef<NodeJS.Timeout>(null);
-
-  const { data: usersFetched, refetch } = useSearchUsers(searchTerm);
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
+  // const debounceTimeoutRef = useRef<NodeJS.Timeout>(null);
+  const userId = useUserStore((state) => state.id);
 
   const { addUsersToChatroom, addUsersToChatroomLoading: loading } =
-    useChatroomMutations();
+    useChatroomMutations(userId);
 
   const handleSearchChange = (term: string) => {
-    if (debounceTimeoutRef.current) {
-      clearTimeout(debounceTimeoutRef.current);
-    }
-
-    debounceTimeoutRef.current = setTimeout(() => {
-      setSearchTerm(term);
-      if (term) {
-        refetch({ fullname: term });
-      }
-    }, 300);
+    setSearchTerm(term);
   };
 
   const handleAddUsers = async (chatroomId: number) => {
     if (!chatroomId || selectedUsers.length === 0) return;
-
+    console.log("jajajajaaja");
     try {
       await addUsersToChatroom({
         chatroomId,
@@ -46,6 +39,8 @@ export function useAddUsersToRoom() {
     setSearchTerm("");
   };
 
+  // Aquí deberías usar debouncedSearchTerm para la búsqueda de usuarios:
+  const { data: usersFetched } = useSearchUsers(debouncedSearchTerm);
   const searchResults =
     usersFetched?.searchUsers?.map((user: UserEntity) => ({
       label: user.fullname,
@@ -54,6 +49,7 @@ export function useAddUsersToRoom() {
 
   return {
     searchTerm,
+    debouncedSearchTerm,
     selectedUsers,
     setSelectedUsers,
     searchResults,
