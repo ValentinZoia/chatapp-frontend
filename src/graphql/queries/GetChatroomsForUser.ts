@@ -20,10 +20,7 @@ export const GET_CHATROOMS_FOR_USER = gql`
       }
       # Usuarios totales
       users {
-        avatarUrl
         id
-        fullname
-        email
       }
     }
   }
