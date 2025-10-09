@@ -24,7 +24,7 @@ import { useGeneralStore } from "@/stores/generalStore";
 
 function LoginForm() {
   const setUser = useUserStore((state) => state.setUser);
-  const setIsLoginOpen = useGeneralStore((state) => state.toggleLoginModal);
+  const toogleLoginOpen = useGeneralStore((state) => state.toggleLoginModal);
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: defaultValues,
@@ -50,7 +50,7 @@ function LoginForm() {
           fullname: user.fullname,
           avatarUrl: user.avatarUrl || null,
         });
-        setIsLoginOpen();
+        toogleLoginOpen();
       }
     } catch (err) {
       // Error handled by useMutation
