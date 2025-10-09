@@ -1,11 +1,10 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 // import { Separator } from "@/components/ui/separator";
 import { TypingIndicator } from "../TypingIndicator";
 import { Send, Image } from "lucide-react";
-import { useEffect } from "react";
+// import { useEffect } from "react";
 
 interface InputMessageProps {
   messageContent: string;
@@ -30,17 +29,17 @@ function InputMessage({
   handleUserStartedTyping,
   typingUsers,
 }: InputMessageProps) {
-  useEffect(() => {
-    const handleKeyPress = (ev: KeyboardEvent) => {
-      handleUserStartedTyping();
-      if (ev.key === "Enter" && !ev.shiftKey) {
-        ev.preventDefault();
-        handleSendMessage();
-      }
-    };
-    window.addEventListener("keypress", handleKeyPress);
-    return () => window.removeEventListener("keypress", handleKeyPress);
-  }, []);
+  // useEffect(() => {
+  //   const handleKeyPress = (ev: KeyboardEvent) => {
+  //     handleUserStartedTyping();
+  //     if (ev.key === "Enter" && !ev.shiftKey) {
+  //       ev.preventDefault();
+  //       handleSendMessage();
+  //     }
+  //   };
+  //   window.addEventListener("keypress", handleKeyPress);
+  //   return () => window.removeEventListener("keypress", handleKeyPress);
+  // }, []);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
