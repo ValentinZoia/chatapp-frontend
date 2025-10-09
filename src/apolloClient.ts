@@ -96,6 +96,7 @@ const uploadLink = new UploadHttpLink({
   credentials: "include",
   headers: {
     "Content-Type": "application/json",
+    "x-apollo-operation-name": "UploadFile",
   },
 });
 
