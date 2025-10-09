@@ -37,6 +37,7 @@ function DialogDeleteChatroom({
   const onDelete = async () => {
     try {
       await deleteChatroom({ chatroomId });
+      onClose();
       setTimeout(() => {
         navigate("/");
       }, 500);
