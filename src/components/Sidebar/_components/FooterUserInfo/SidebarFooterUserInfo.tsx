@@ -1,11 +1,13 @@
 import { SidebarFooter } from "@/components/ui/sidebar";
 import { LogOutButton } from "../LogOutButton";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useUserStore } from "@/stores/userStore";
 import { useGeneralStore } from "@/stores/generalStore";
+import { EditProfileButton } from "../EditProfileButton";
 
 function SidebarFooterUserInfo() {
   const username = useUserStore((state) => state.fullname);
+  const avatarUrl = useUserStore((state) => state.avatarUrl);
   const toggleLoginModal = useGeneralStore((state) => state.toggleLoginModal);
   return (
     <SidebarFooter className="border-t border-sidebar-border">
@@ -13,6 +15,10 @@ function SidebarFooterUserInfo() {
         {username ? (
           <>
             <Avatar className="h-9 w-9">
+              <AvatarImage
+                src={avatarUrl || "/placeholder.svg"}
+                alt={username}
+              />
               <AvatarFallback className="bg-primary text-primary-foreground">
                 {username ? username.charAt(0).toUpperCase() : "U"}
               </AvatarFallback>
@@ -23,6 +29,7 @@ function SidebarFooterUserInfo() {
               </p>
               <p className="truncate text-xs text-muted-foreground">En línea</p>
             </div>
+            <EditProfileButton />
             <LogOutButton />
           </>
         ) : (

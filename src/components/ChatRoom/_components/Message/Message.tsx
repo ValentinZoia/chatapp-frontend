@@ -1,4 +1,4 @@
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { IMessage } from "@/data/Chatrooms/useGetMessagesForChatroom";
 import { formatTime } from "@/lib/utils";
 
@@ -12,6 +12,10 @@ function Message({ msg, isOwn }: Props) {
   return (
     <>
       <Avatar className="h-9 w-9 shrink-0">
+        <AvatarImage
+          src={msg.user?.avatarUrl || "/placeholder.svg"}
+          alt={msg.user?.fullname}
+        />
         <AvatarFallback
           className={isOwn ? "bg-primary text-primary-foreground" : "bg-muted"}
         >
