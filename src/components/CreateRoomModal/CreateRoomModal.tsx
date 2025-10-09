@@ -114,10 +114,15 @@ function CreateRoomModal() {
 
         <DialogFooter className="flex justify-between">
           {currentStep > 0 && (
-            <Button variant="outline" onClick={goToPreviousStep}>
-              <ChevronLeft className="h-4 w-4 mr-2" />
-              Back
-            </Button>
+            <div className="flex gap-2 items-center ">
+              <Button variant="outline" onClick={goToPreviousStep}>
+                <ChevronLeft className="h-4 w-4 mr-2" />
+                Back
+              </Button>
+              <Button variant="outline" onClick={handleClose}>
+                Omitir
+              </Button>
+            </div>
           )}
 
           {currentStep === 1 && selectedUsers.length > 0 && (
