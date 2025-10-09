@@ -51,7 +51,7 @@ export function useChatroomMutations(userId?: number) {
     {
       refetchQueries: [
         { query: GET_CHATROOMS_FOR_USER, variables: { userId } },
-      ], // Cambia '1' por el ID del usuario actual
+      ],
     }
   );
 
@@ -108,7 +108,7 @@ export function useChatroomMutations(userId?: number) {
     AddUsersToChatroomMutation,
     AddUsersToChatroomMutationVariables
   >(ADD_USERS_TO_CHATROOM, {
-    refetchQueries: [{ query: GET_CHATROOMS_FOR_USER, variables: { userId } }], // Cambia '1' por el ID del usuario actual
+    refetchQueries: [{ query: GET_CHATROOMS_FOR_USER, variables: { userId } }],
   });
 
   const addUsersToChatroom = (input: AddUsersToChatroomMutationVariables) => {
