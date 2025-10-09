@@ -15,7 +15,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Check, ChevronsUpDown, X } from "lucide-react";
+import { Check, ChevronsUpDown, XIcon } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -40,7 +40,7 @@ function AddMembersStep({
   const handleSelect = (value: string, label: string) => {
     setSearchValue(label);
     if (selectedUsers.includes(value)) {
-      onSelectUser(selectedUsers.filter((id) => id !== value));
+      removeUser(value);
     } else {
       onSelectUser([...selectedUsers, value]);
     }
@@ -48,6 +48,7 @@ function AddMembersStep({
 
   const removeUser = (userId: string) => {
     onSelectUser(selectedUsers.filter((id) => id !== userId));
+    setSearchValue("");
   };
 
   const selectedUserLabels = selectedUsers
@@ -153,13 +154,15 @@ function AddMembersStep({
               <Badge
                 key={selectedUsers[index]}
                 variant="secondary"
-                className="gap-1"
+                className="gap-4"
               >
                 {label}
-                <X
-                  className="h-3 w-3 cursor-pointer"
-                  onClick={() => removeUser(selectedUsers[index])}
-                />
+                <div>
+                  <XIcon
+                    className="h-3 w-3 hover:text-red-600  cursor-pointer"
+                    onClick={() => removeUser(selectedUsers[index])}
+                  />
+                </div>
               </Badge>
             ))}
           </div>
