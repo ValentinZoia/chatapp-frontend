@@ -9,15 +9,16 @@ import {
   createChatroomSchema,
   type CreateChatroomFormData,
 } from "@/lib/zod-schemas/createChatroomSchema";
+import { useUserStore } from "@/stores/userStore";
 
 export type IRoom = CreateChatroomMutation["createChatroom"];
 export function useCreateChatroom() {
   const [newlyCreatedChatroom, setNewlyCreatedChatroom] = useState<
     CreateChatroomMutation["createChatroom"] | null
   >(null);
-
+  const userId = useUserStore((state) => state.id);
   const { createChatroom, createChatroomLoading: loading } =
-    useChatroomMutations();
+    useChatroomMutations(userId);
 
   const form = useForm<CreateChatroomFormData>({
     resolver: zodResolver(createChatroomSchema),

@@ -40,7 +40,7 @@ export function useChatroom() {
     chatroomId,
   });
 
-  const { enterChatroom, leaveChatroom } = useChatroomMutations();
+  const { enterChatroom, leaveChatroom } = useChatroomMutations(userId);
 
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [liveUsers, setLiveUsers] = useState<UserEntity[]>([]);
