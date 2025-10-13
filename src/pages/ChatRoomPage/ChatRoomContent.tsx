@@ -1,43 +1,34 @@
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   ChatArea,
   ChatRoomHeader,
   InputMessage,
 } from "@/components/ChatRoom/_components";
-import { useMessageSender } from "@/hooks/useMessageSender";
+
 import { useChatroom } from "@/hooks/useChatroom";
-import { useTypingIndicator } from "@/hooks/useTypingIndicator";
+
+// import { Suspense } from "react";
+import { useUserStore } from "@/stores/userStore";
 
 function ChatRoomContent() {
-  const {
-    infoChatroom,
+  const { roomId } = useParams<{ roomId: string }>();
+  if (!roomId) {
+    throw new Response("Invalid room ID", { status: 400 });
+  }
+  const chatroomId = parseInt(roomId!);
+  const userId = useUserStore((state) => state.id);
+
+  const { infoChatroom, liveUsersLoading, isUserPartOfChatroom } = useChatroom({
     chatroomId,
-    userId,
-    messages,
-
-    liveUsersLoading,
-    isUserPartOfChatroom,
-  } = useChatroom();
-
-  const { typingUsers, handleUserStartedTyping } =
-    useTypingIndicator(chatroomId);
-
-  const {
-    messageContent,
-    setMessageContent,
-    selectedFile,
-    previewUrl,
-    getRootProps,
-    getInputProps,
-    handleSendMessage,
-  } = useMessageSender(chatroomId, userId || 0);
+    userId: userId,
+  });
 
   if (liveUsersLoading || !isUserPartOfChatroom) {
     return null;
   }
 
-  if (!chatroomId) {
+  if (!chatroomId || !userId) {
     return (
       <div className="flex h-full items-center justify-center">
         <div className="text-center">
@@ -58,27 +49,19 @@ function ChatRoomContent() {
   return (
     <div className="flex h-screen flex-col overflow-y-hidden">
       {/* Room Header */}
-      <ChatRoomHeader roomInfo={infoChatroom} />
+      <ChatRoomHeader roomInfo={infoChatroom} userId={userId} />
 
       {/* Chat Messages */}
-      <ChatArea
-        messages={messages}
-        currentUserId={userId || 0}
-        // loading={messagesLoading} // Si tienes loading, pásalo aquí
-      />
+      {/* <Suspense
+        fallback={
+          <div className="flex-1 overflow-auto">Cargando mensajes...</div>
+        }
+      > */}
+      <ChatArea currentUserId={userId} />
+      {/* </Suspense> */}
 
       {/* Message Input */}
-      <InputMessage
-        messageContent={messageContent}
-        setMessageContent={setMessageContent}
-        selectedFile={selectedFile}
-        previewUrl={previewUrl}
-        getRootProps={getRootProps}
-        getInputProps={getInputProps}
-        handleSendMessage={handleSendMessage}
-        handleUserStartedTyping={handleUserStartedTyping}
-        typingUsers={typingUsers}
-      />
+      <InputMessage chatroomId={chatroomId} userId={userId} />
     </div>
   );
 }
