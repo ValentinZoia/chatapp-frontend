@@ -13,13 +13,13 @@ function Message({ msg, isOwn }: Props) {
     <>
       <Avatar className="h-9 w-9 shrink-0">
         <AvatarImage
-          src={msg.user?.avatarUrl || "/placeholder.svg"}
-          alt={msg.user?.fullname}
+          src={msg.node.user?.avatarUrl || "/placeholder.svg"}
+          alt={msg.node.user?.fullname}
         />
         <AvatarFallback
           className={isOwn ? "bg-primary text-primary-foreground" : "bg-muted"}
         >
-          {msg.user?.fullname.charAt(0).toUpperCase()}
+          {msg.node.user?.fullname.charAt(0).toUpperCase()}
         </AvatarFallback>
       </Avatar>
       <div
@@ -27,10 +27,12 @@ function Message({ msg, isOwn }: Props) {
       >
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium text-foreground">
-            {msg.user?.fullname}
+            {msg.node.user?.fullname}
           </span>
           <span className="text-xs text-muted-foreground">
-            {msg.createdAt ? formatTime(msg.createdAt) : formatTime(new Date())}
+            {msg.node.createdAt
+              ? formatTime(msg.node.createdAt)
+              : formatTime(new Date())}
           </span>
         </div>
         <div
@@ -41,7 +43,7 @@ function Message({ msg, isOwn }: Props) {
           }`}
         >
           <p className="text-sm break-words whitespace-pre-line">
-            {msg.content}
+            {msg.node.content}
           </p>
         </div>
       </div>
