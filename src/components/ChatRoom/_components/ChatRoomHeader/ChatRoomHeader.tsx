@@ -6,7 +6,6 @@ import { ArrowLeft, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import { UserAvatarGroup } from "../UserAvatarGroup";
 import { Field } from "@/components/Home/_components/RoomCard/_components";
-import { useUserStore } from "@/stores/userStore";
 import { SettingsPopover } from "../SettingsPopover";
 import { useGeneralStore } from "@/stores/generalStore";
 import { DialogDeleteChatroom } from "../DialogDeleteChatroom";
@@ -14,10 +13,11 @@ import { DialogAddMembers } from "../DialogAddMembers";
 // import { Image } from "@/components/Image";
 function ChatRoomHeader({
   roomInfo,
+  userId,
 }: {
   roomInfo: GetUsersOfChatroomQuery["getChatroomById"] | undefined;
+  userId: number;
 }) {
-  const userId = useUserStore((state) => state.id);
   const isDeleteChatroomDialogOpen = useGeneralStore(
     (state) => state.isDeleteChatroomDialogOpen
   );
