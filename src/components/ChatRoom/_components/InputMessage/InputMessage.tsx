@@ -1,45 +1,30 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 // import { Separator } from "@/components/ui/separator";
 import { TypingIndicator } from "../TypingIndicator";
 import { Send, Image } from "lucide-react";
+import { useMessageSender } from "@/hooks/useMessageSender";
+import { useTypingIndicator } from "@/hooks/useTypingIndicator";
 // import { useEffect } from "react";
 
 interface InputMessageProps {
-  messageContent: string;
-  setMessageContent: (content: string) => void;
-  selectedFile: File | null;
-  previewUrl: string | null;
-  getRootProps: any;
-  getInputProps: any;
-  handleSendMessage: () => void;
-  handleUserStartedTyping: () => void;
-  typingUsers: Array<any>;
+  chatroomId: number;
+  userId: number | undefined;
 }
 
-function InputMessage({
-  messageContent,
-  setMessageContent,
-  selectedFile,
-  previewUrl,
-  getRootProps,
-  getInputProps,
-  handleSendMessage,
-  handleUserStartedTyping,
-  typingUsers,
-}: InputMessageProps) {
-  // useEffect(() => {
-  //   const handleKeyPress = (ev: KeyboardEvent) => {
-  //     handleUserStartedTyping();
-  //     if (ev.key === "Enter" && !ev.shiftKey) {
-  //       ev.preventDefault();
-  //       handleSendMessage();
-  //     }
-  //   };
-  //   window.addEventListener("keypress", handleKeyPress);
-  //   return () => window.removeEventListener("keypress", handleKeyPress);
-  // }, []);
+function InputMessage({ chatroomId, userId }: InputMessageProps) {
+  const {
+    messageContent,
+    setMessageContent,
+    selectedFile,
+    previewUrl,
+    getRootProps,
+    getInputProps,
+    handleSendMessage,
+  } = useMessageSender(chatroomId, userId || 0);
+
+  const { typingUsers, handleUserStartedTyping } =
+    useTypingIndicator(chatroomId);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
