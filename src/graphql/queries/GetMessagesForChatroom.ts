@@ -7,24 +7,25 @@ export const GET_MESSAGES_FOR_CHATROOM = gql`
       take: $take
       cursor: $cursor
     ) {
-      id
-      content
-      imageUrl
-      createdAt
-      user {
-        id
-        fullname
-        avatarUrl
+      edges {
+        node {
+          id
+          content
+          imageUrl
+          createdAt
+          user {
+            id
+            fullname
+            avatarUrl
+          }
+        }
+        cursor
       }
-      # chatroom {
-      #   id
-      #   name
-      #   users {
-      #     id
-      #     fullname
-      #     avatarUrl
-      #   }
-      # }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      totalCount
     }
   }
 `;
