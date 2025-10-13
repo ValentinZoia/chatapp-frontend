@@ -1,8 +1,12 @@
 import { gql } from "@apollo/client";
 
 export const GET_MESSAGES_FOR_CHATROOM = gql`
-  query GetMessagesForChatroom($chatroomId: Float!) {
-    getMessagesForChatroom(chatroomId: $chatroomId) {
+  query GetMessagesForChatroom($chatroomId: Float!, $take: Int!, $cursor: Int) {
+    getMessagesForChatroom(
+      chatroomId: $chatroomId
+      take: $take
+      cursor: $cursor
+    ) {
       id
       content
       imageUrl
