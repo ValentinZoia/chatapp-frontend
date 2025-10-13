@@ -1,33 +1,22 @@
 import { useChatroomMutations } from "@/data/Chatrooms/useChatroomsMutations";
-import {
-  useGetMessagesForChatroom,
-  type IMessage,
-} from "@/data/Chatrooms/useGetMessagesForChatroom";
 import { useLiveUsersSubscriptions } from "@/data/Chatrooms/useLiveUsersSubscriptions";
-import { useMessagesSubscriptions } from "@/data/Chatrooms/useMessagesSubscriptions";
 import { useGetUsersAndChatroomInfo } from "@/data/Users/useGetUsersOfChatroom";
-import {
-  ChatroomAccess,
-  // GetMessagesForChatroomQuery,
-  // NewMessageSubscription,
-  type UserEntity,
-} from "@/gql/graphql";
-
-import { useUserStore } from "@/stores/userStore";
+import { ChatroomAccess, type UserEntity } from "@/gql/graphql";
 
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 
-export function useChatroom() {
-  const { roomId } = useParams<{ roomId: string }>();
-  if (!roomId) {
-    throw new Response("Invalid room ID", { status: 400 });
+export function useChatroom({
+  userId,
+  chatroomId,
+}: {
+  userId: number | undefined;
+  chatroomId: number;
+}) {
+  if (userId === undefined) {
+    throw new Error("User ID is required");
   }
-  const chatroomId = parseInt(roomId!);
-  const userId = useUserStore((state) => state.id);
-
-  //Traer los mensajes de la chatroom
-  const { data: messagesData } = useGetMessagesForChatroom(chatroomId);
+  const [liveUsers, setLiveUsers] = useState<UserEntity[]>([]);
+  const [isUserPartOfChatroom, setIsUserPartOfChatroom] = useState(false);
 
   // Traer los usuarios de la chatroom y la info (name, desc, etc).
   const { data: chatroomInfo } = useGetUsersAndChatroomInfo(chatroomId);
@@ -36,15 +25,7 @@ export function useChatroom() {
   const { liveUsersData, liveUsersLoading } =
     useLiveUsersSubscriptions(chatroomId);
 
-  const { newMessageData } = useMessagesSubscriptions({
-    chatroomId,
-  });
-
   const { enterChatroom, leaveChatroom } = useChatroomMutations(userId);
-
-  const [messages, setMessages] = useState<IMessage[]>([]);
-  const [liveUsers, setLiveUsers] = useState<UserEntity[]>([]);
-  const [isUserPartOfChatroom, setIsUserPartOfChatroom] = useState(false);
 
   // Handle enter/leave chatroom
   useEffect(() => {
@@ -74,41 +55,6 @@ export function useChatroom() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatroomId]);
 
-  // Update messages
-  useEffect(() => {
-    if (messagesData?.getMessagesForChatroom) {
-      // if (messagesData.getMessagesForChatroom[0].chatroom) {
-      //   console.log(messagesData.getMessagesForChatroom[0].chatroom);
-      //   setInfoChatroom(messagesData.getMessagesForChatroom[0].chatroom);
-      // }
-      const uniqueMessages = Array.from(
-        new Set(messagesData.getMessagesForChatroom.map((m) => m.id))
-      )
-        .map((id) =>
-          messagesData.getMessagesForChatroom.find((m) => m.id === id)
-        )
-        .filter((m): m is IMessage => m !== undefined && m !== null);
-      setMessages(uniqueMessages);
-    }
-  }, [messagesData]);
-
-  // Handle new messages from subscription
-  useEffect(() => {
-    if (newMessageData?.newMessage) {
-      setMessages((prev) => {
-        if (
-          newMessageData.newMessage &&
-          !prev.find((m) => m?.id === newMessageData.newMessage?.id)
-        ) {
-          return [...prev, newMessageData.newMessage as IMessage].filter(
-            (m): m is IMessage => m !== undefined && m !== null
-          );
-        }
-        return prev.filter((m): m is IMessage => m !== undefined && m !== null);
-      });
-    }
-  }, [newMessageData]);
-
   // Update live users
   useEffect(() => {
     if (liveUsersData?.liveUsersInChatroom) {
@@ -135,10 +81,6 @@ export function useChatroom() {
 
   return {
     infoChatroom: chatroomInfo?.getChatroomById,
-    chatroomId,
-    userId,
-    messages,
-    // users: chatroomInfo?.getUsersOfChatroom || [],
     liveUsers,
     liveUsersLoading,
     isUserPartOfChatroom,
