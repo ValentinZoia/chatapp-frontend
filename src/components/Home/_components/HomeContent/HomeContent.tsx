@@ -5,8 +5,8 @@ import { UserRoomBox } from "../UserRoomsBox";
 
 function HomeContent() {
   return (
-    <div className="flex-1 overflow-y-auto">
-      <div className="p-8 flex flex-col gap-8">
+    <div className="flex-1 overflow-y-auto ">
+      <div className="p-4 flex flex-col gap-8">
         {/* Public Rooms Grid */}
         <RoomsBox rooms={FEATURED_ROOMS} title="Salas Principales" />
 

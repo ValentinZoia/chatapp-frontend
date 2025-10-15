@@ -1,12 +1,41 @@
 import { HomeContent } from "@/components/Home/_components";
-import { SidebarTrigger } from "@/components/ui/sidebar";
+
+import { Image } from "@/components/Image";
+
+const banner = {
+  imageUrl: "/stadium-banner.png",
+  title: "¡BIENVENIDO!",
+  description: "Busca una sala y empezá a charlar con otros hinchas",
+};
 
 function Home() {
   return (
-    <div className="flex h-full flex-col overflow-hidden">
-      <SidebarTrigger />
+    <div className="flex h-full flex-col overflow-hidden bg-muted">
+      <div className="relative w-full overflow-hidden">
+        <Image
+          src={banner.imageUrl || "/placeholder.svg"}
+          alt={banner.title || "Banner"}
+          className="object-cover"
+          aspectRatio={16 / 5}
+          lazy={true}
+          placeholderSrc="https://placehold.co/1000x500"
+          errorSrc="https://placehold.co/1000x500"
+        />
+        {banner.title && (
+          <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent flex flex-col justify-center p-10 lg:p-14">
+            <h2 className="text-3xl md:text-5xl font-bold text-white mb-2">
+              {banner.title}
+            </h2>
+            <p className="text-white/90 text-lg md:text-xl mb-6 max-w-md">
+              {banner.description}
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* <SidebarTrigger /> */}
       {/* Header */}
-      <div className="border-b border-border bg-card px-8 py-6">
+      {/* <div className="border-b border-border bg-card px-8 py-6">
         <div className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight text-foreground">
             Bienvenido al Chat de Fútbol Argentino
@@ -15,7 +44,7 @@ function Home() {
             Elegí una sala y empezá a charlar con otros hinchas
           </p>
         </div>
-      </div>
+      </div> */}
 
       {/* Content */}
       <HomeContent />
