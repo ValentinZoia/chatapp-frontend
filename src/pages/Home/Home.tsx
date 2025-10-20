@@ -1,5 +1,4 @@
 import { HomeContent } from "@/components/Home/_components";
-
 import { Image } from "@/components/Image";
 
 const banner = {
@@ -9,7 +8,7 @@ const banner = {
 };
 
 function Home() {
-  return (
+return (
     <div className="flex h-full flex-col overflow-hidden bg-muted">
       <div className="relative w-full overflow-hidden">
         <Image
