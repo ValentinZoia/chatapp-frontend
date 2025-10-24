@@ -4,18 +4,15 @@
     "target": "ES2022",
     "useDefineForClassFields": true,
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "module": "ESNext", 
+    "module": "ESNext",
     "types": ["vite/client"],
     "skipLibCheck": true,
-    "allowJs": true,// cambie de false a true, por problemas con apollo-upload-client
+    "allowJs": true, // cambie de false a true, por problemas con apollo-upload-client
     "maxNodeModuleJsDepth": 10, //lo cambie por apollo-upload-client
-    "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./src/*"
-      ]
+      "@/*": ["./src/*"],
+      "*": ["."]
     },
-
 
     /* Bundler mode */
     "moduleResolution": "bundler",
