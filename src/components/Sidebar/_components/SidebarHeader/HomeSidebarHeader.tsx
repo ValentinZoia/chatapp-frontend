@@ -1,4 +1,4 @@
-import { SidebarHeader, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarHeader } from "@/components/ui/sidebar";
 import { MessageSquare } from "lucide-react";
 
 function HomeSidebarHeader() {
@@ -16,7 +16,7 @@ function HomeSidebarHeader() {
             <p className="text-xs text-muted-foreground">Argentina</p>
           </div>
         </div>
-        <SidebarTrigger />
+
       </div>
     </SidebarHeader>
   );
