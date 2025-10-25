@@ -23,7 +23,7 @@ import { FEATURED_ROOMS } from "@/data/featured-rooms";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar collapsible="offcanvas" variant="sidebar" {...props}>
+    <Sidebar collapsible="offcanvas" variant="sidebar" className="hidden md:block"  {...props}>
       <HomeSidebarHeader />
 
       <SidebarContent>
