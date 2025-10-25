@@ -17,24 +17,28 @@ const router = createBrowserRouter([
         index: true,
         element: <Home />,
       },
+
+    ],
+  },
+  {
+    path: "room",
+    children: [
       {
-        path: "room",
-        children: [
-          {
-            index: true,
-            element: <ChatRoomPage />,
-          },
-          {
-            path: ":roomId",
-            element: <ChatRoomPage />,
-            loader: async ({ params }) => {
-              if (!params.roomId) {
-                throw new Response("Invalid room ID", { status: 400 });
-              }
-              return { roomId: params.roomId };
-            },
-          },
-        ],
+        index: true,
+        element: <AuthGuard>
+
+          <ChatRoomPage />,
+        </AuthGuard>
+      },
+      {
+        path: ":roomId",
+        element: <ChatRoomPage />,
+        loader: async ({ params }) => {
+          if (!params.roomId) {
+            throw new Response("Invalid room ID", { status: 400 });
+          }
+          return { roomId: params.roomId };
+        },
       },
     ],
   },
