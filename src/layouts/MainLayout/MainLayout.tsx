@@ -14,7 +14,7 @@ const MainLayout = () => {
         <NavBar />
         <Outlet />
         <Footer />
-        <MenuBar className="sticky bottom-0 z-40 flex w-full justify-center items-center gap-12 border-t border-muted bg-background text-blue-500  py-6 md:hidden" />
+        <MenuBar />
       </SidebarInset>
     </SidebarProvider>
   );
