@@ -14,9 +14,7 @@ function NavBar() {
           />
         </Link>
         <div className="flex items-center gap-5 list-none">
-          {/* <SearchField />
-          <MenuBar className="hidden md:flex items-center space-x-5" />
-          <DropdownMenuMyAccount sessionProp={session} /> */}
+
           <Search className=" h-6 w-6 text-gray-400 cursor-pointer" />
 
           <User2 className="hidden md:block h-6 w-6 text-gray-400 cursor-pointer" />
