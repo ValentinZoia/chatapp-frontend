@@ -1,6 +1,6 @@
 import { Suspense } from "react";
-import ChatRoomContent from "./ChatRoomContent";
-import ChatRoomSkeleton from "./ChatRoomSkeleton";
+import { ChatRoomContent, ChatRoomSkeleton } from "./_components";
+
 
 function ChatRoomPage() {
   return (
