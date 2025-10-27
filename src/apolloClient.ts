@@ -58,6 +58,7 @@ export function clearAuthSession() {
     avatarUrl: null,
     fullname: "",
     email: "",
+    isAuthenticated: false,
   });
 
   // Opcional: redirigir al login
