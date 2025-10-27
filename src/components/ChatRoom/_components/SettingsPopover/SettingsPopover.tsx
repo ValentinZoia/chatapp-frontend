@@ -5,32 +5,54 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-import { Settings, Trash, UserRoundPlus } from "lucide-react";
+import { LoaderCircle, Settings, Trash, UserRoundPlus } from "lucide-react";
 
 import { useGeneralStore } from "@/stores/generalStore";
+import { cn } from "@/lib/utils";
 
 const SETTINGS_ITEMS = [
   { id: 1, icon: <UserRoundPlus />, text: "Agregar Usuarios" },
   { id: 2, icon: <Trash />, text: "Eliminar Sala" },
 ];
 
-function Item({
+export function ItemForPopover({
   icon,
   text,
+  disabledTextInDesktop = false,
   onClick,
+  disabled = false,
 }: {
   icon: React.ReactNode;
-  text: string;
-  onClick: () => void;
+  text?: string;
+  disabledTextInDesktop?: boolean;
+  onClick?: () => void;
+  disabled?: boolean;
 }) {
   return (
-    <div
-      className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer"
+    <button
+      className={cn(
+        "w-full  flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer",
+        disabledTextInDesktop ? "md:w-fit md:p-0" : "",
+      )}
       onClick={onClick}
+      type="button"
     >
-      {icon}
-      <span className="text-sm">{text}</span>
-    </div>
+      {disabled ? (
+        <LoaderCircle className="h-4 w-4 animate-spin" />
+      ) : (
+        <>
+          {icon}
+
+        </>
+      )}
+      {
+        text && <span className={cn(
+          "text-sm",
+          disabledTextInDesktop ? "md:hidden" : ""
+        )}>{text}</span>
+      }
+
+    </button>
   );
 }
 
@@ -71,7 +93,7 @@ function SettingsPopover({ chatroomId }: { chatroomId?: number }) {
           </h4>
           <div className="max-h-64 overflow-y-auto">
             {SETTINGS_ITEMS.map((item) => (
-              <Item
+              <ItemForPopover
                 key={item.id}
                 icon={item.icon}
                 text={item.text}
