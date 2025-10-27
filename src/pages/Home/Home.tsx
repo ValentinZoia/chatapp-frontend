@@ -17,6 +17,9 @@ function Home() {
 
 
     <div className="flex h-full flex-col overflow-hidden bg-muted mb-2">
+
+
+      {/* Header */}
       <div className="relative w-full overflow-hidden">
         <Image
           src={banner.imageUrl || "/placeholder.svg"}
@@ -38,19 +41,6 @@ function Home() {
           </div>
         )}
       </div>
-
-      {/* <SidebarTrigger /> */}
-      {/* Header */}
-      {/* <div className="border-b border-border bg-card px-8 py-6">
-        <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">
-        Bienvenido al Chat de Fútbol Argentino
-        </h1>
-        <p className="text-muted-foreground">
-        Elegí una sala y empezá a charlar con otros hinchas
-        </p>
-        </div>
-        </div> */}
 
       {/* Content */}
       <HomeContent />
