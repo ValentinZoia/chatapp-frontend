@@ -1,5 +1,6 @@
-import { Search, User2 } from "lucide-react";
+// import { User2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { SearchInput } from "./_components";
 
 function NavBar() {
   return (
@@ -15,9 +16,10 @@ function NavBar() {
         </Link>
         <div className="flex items-center gap-5 list-none">
 
-          <Search className=" h-6 w-6 text-gray-400 cursor-pointer" />
+          {/* <Search className=" h-6 w-6 text-gray-400 cursor-pointer" /> */}
+          <SearchInput />
 
-          <User2 className="hidden md:block h-6 w-6 text-gray-400 cursor-pointer" />
+          {/* <User2 className="hidden md:block h-6 w-6 text-gray-400 cursor-pointer" /> */}
         </div>
       </div>
     </nav>
