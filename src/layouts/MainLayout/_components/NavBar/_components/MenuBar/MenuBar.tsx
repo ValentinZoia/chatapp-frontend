@@ -1,8 +1,9 @@
 import { ButtonCreateRoom } from "@/layouts/MainLayout/_components/Sidebar/_components";
 
-import { Home, MessagesSquare } from "lucide-react";
+import { Home } from "lucide-react";
 import { Link } from "react-router-dom";
 import { UserProfilePopover } from "../UserProfilePopover";
+import { UserRoomsPopover } from "../UserRoomsPopover";
 
 export function IconItemMenuBar({ iconMobile: IconMobile, iconDesktop: IconDesktop, label, to, onClick, disabled = false }: { iconMobile: React.ComponentType<{ className?: string }>; iconDesktop?: React.ComponentType<{ className?: string }>; label: string; to?: string; onClick?: () => void, disabled?: boolean; }) {
   return (
@@ -39,7 +40,7 @@ export default function MenuBar() {
       <ButtonCreateRoom />
 
       {/* Mis salas */}
-      <IconItemMenuBar iconMobile={MessagesSquare} label="Mis Salas" />
+      <UserRoomsPopover />
 
       {/* Perfil de usuario */}
       <UserProfilePopover />
