@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 function NavBar() {
   return (
-    <nav className="sticky top-0 z-50 bg-background  px-4 py-2">
+    <nav className="sticky top-0 z-50 bg-background border-b border-muted  px-4 py-2">
       <div className="container max-w-[1600px] mx-auto flex items-center justify-between">
         <Link to="/" className="text-xl font-bold" aria-label="Ir al inicio">
           {/* <CuervoLogo /> */}

@@ -16,7 +16,7 @@ import {
   HomeSidebarHeader,
   SidebarFooterUserInfo,
   UserRooms,
-} from "@/components/Sidebar/_components";
+} from "@/layouts/MainLayout/_components/Sidebar/_components";
 
 import { Suspense } from "react";
 import { FEATURED_ROOMS } from "@/data/featured-rooms";

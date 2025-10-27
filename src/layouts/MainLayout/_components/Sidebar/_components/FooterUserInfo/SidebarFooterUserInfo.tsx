@@ -1,8 +1,8 @@
 import { SidebarFooter } from "@/components/ui/sidebar";
-import { LogOutButton } from "../LogOutButton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useUserStore } from "@/stores/userStore";
 import { useGeneralStore } from "@/stores/generalStore";
+import { LogOutButton } from "../LogOutButton";
 import { EditProfileButton } from "../EditProfileButton";
 
 function SidebarFooterUserInfo() {
@@ -23,14 +23,21 @@ function SidebarFooterUserInfo() {
                 {username ? username.charAt(0).toUpperCase() : "U"}
               </AvatarFallback>
             </Avatar>
-            <div className="flex-1 overflow-hidden">
-              <p className="truncate text-sm font-medium text-sidebar-accent-foreground">
-                {username || "Usuario"}
-              </p>
-              <p className="truncate text-xs text-muted-foreground">En línea</p>
+            <div className="flex-1 flex overflow-hidden">
+              <div>
+                <p className="truncate text-sm font-medium text-sidebar-accent-foreground">
+                  {username || "Usuario"}
+                </p>
+
+                <p className="truncate text-xs text-muted-foreground">En línea</p>
+              </div>
+              <div className="w-full flex justify-end gap-4">
+                <EditProfileButton />
+                <LogOutButton />
+
+              </div>
             </div>
-            <EditProfileButton />
-            <LogOutButton />
+
           </>
         ) : (
           <div className="w-full flex justify-center">

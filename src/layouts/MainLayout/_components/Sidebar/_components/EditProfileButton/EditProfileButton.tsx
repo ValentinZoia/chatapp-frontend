@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { ItemForPopover } from "@/components/ChatRoom/_components/SettingsPopover/SettingsPopover";
 import { useGeneralStore } from "@/stores/generalStore";
 import { UserPen } from "lucide-react";
 
@@ -8,15 +8,12 @@ function EditProfileButton() {
   );
 
   return (
-    <Button
-      variant="ghost"
-      size="icon"
-      className="h-8 w-8 shrink-0 cursor-pointer"
+    <ItemForPopover
+      icon={<UserPen className="size-6 md:size-5" />}
+      disabledTextInDesktop={true}
+      text="Editar Perfil"
       onClick={toggleLoginModal}
-      title="Editar Perfil"
-    >
-      <UserPen className="h-4 w-4 cursor-pointer" />
-    </Button>
+    />
   );
 }
 export default EditProfileButton;

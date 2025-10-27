@@ -1,8 +1,8 @@
 import { clearAuthSession } from "@/apolloClient";
-import { Button } from "@/components/ui/button";
+import { ItemForPopover } from "@/components/ChatRoom/_components/SettingsPopover/SettingsPopover";
 import { useAuthMutations } from "@/data/Auth/useAuthMutations";
 
-import { LoaderCircle, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 
 function LogOutButton() {
   const { logout, logoutLoading } = useAuthMutations();
@@ -12,20 +12,14 @@ function LogOutButton() {
   };
 
   return (
-    <Button
-      variant="ghost"
-      size="icon"
-      className="h-8 w-8 shrink-0 cursor-pointer"
+
+    <ItemForPopover
+      icon={<LogOut className="size-6 md:size-5 md:hover:text-red-500" />}
+      text="Cerrar Sesión"
+      disabledTextInDesktop={true}
       onClick={handleLogout}
-      title="Cerrar sesión"
       disabled={logoutLoading}
-    >
-      {logoutLoading ? (
-        <LoaderCircle className="h-4 w-4 animate-spin" />
-      ) : (
-        <LogOut className="h-4 w-4" />
-      )}
-    </Button>
+    />
   );
 }
 export default LogOutButton;
