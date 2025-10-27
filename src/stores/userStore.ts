@@ -17,6 +17,7 @@ interface UserState {
   updateProfileImage: (image: string) => void;
   updateUsername: (name: string) => void;
   setUser: (user: User) => void;
+  isAuthenticated: boolean;
 }
 
 export const useUserStore = create<UserState>()(
@@ -34,7 +35,10 @@ export const useUserStore = create<UserState>()(
           avatarUrl: user.avatarUrl,
           fullname: user.fullname,
           email: user.email,
+          isAuthenticated: user.id !== null ? true : false,
+
         }),
+      isAuthenticated: false,
     }),
     {
       name: "user-storage",
