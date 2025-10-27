@@ -46,6 +46,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {/* Mis Salas (User Created Rooms) - Suspense */}
 
         <Suspense fallback={<SidebarSeparator />}>
+          <SidebarSeparator />
           <UserRooms />
         </Suspense>
 

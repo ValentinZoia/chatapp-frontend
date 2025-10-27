@@ -1,4 +1,4 @@
-import { SidebarGroup, SidebarSeparator } from "@/components/ui/sidebar";
+import { SidebarGroup } from "@/components/ui/sidebar";
 import { useUserStore } from "@/stores/userStore";
 import { ItemRoomList } from "../ItemRoomList";
 import { useGetChatroomsForUserSidebar } from "@/data/Chatrooms/useGetChatroomForUserSidebar";
@@ -18,8 +18,7 @@ function UserRooms() {
     <>
       {userRooms && userRooms.getChatroomsForUser.length > 0 && (
         <>
-          <SidebarSeparator />
-          <SidebarGroup>
+          <SidebarGroup className="py-0">
             <ItemRoomList
               rooms={userRooms.getChatroomsForUser}
               title="Mis Salas"
