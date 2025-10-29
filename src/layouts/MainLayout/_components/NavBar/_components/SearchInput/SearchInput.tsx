@@ -1,18 +1,61 @@
+import type { ChatroomEntity, GetChatroomsForSearchQuery, GetChatroomsForSearchQueryVariables } from "@/gql/graphql";
+import { SEARCH_CHATROOMS_QUERY } from "@/graphql/queries/SearchChatroomsQuery";
+import { useSearch } from "@/hooks/use-search";
+import { useNavigate } from 'react-router-dom'; // o tu router
+import { cn } from "@/lib/utils";
+
 
 
 function SearchInput() {
+  const navigate = useNavigate();
+
+  const search = useSearch<GetChatroomsForSearchQuery, GetChatroomsForSearchQueryVariables>({
+    queryDoc: SEARCH_CHATROOMS_QUERY,
+    buildVariables: (query) => ({
+      searchTerm: query,
+      limit: 5, // Solo mostramos 5 en el dropdown
+    }),
+    minQueryLength: 1, // Empezar a buscar desde 1 caracter.
+  });
+
+  const chatrooms = search.queryResult.data?.getChatroomsForSearch.chatrooms || [];
+  const totalCount = search.queryResult.data?.getChatroomsForSearch.totalCount || 0;
+  const hasMoreResults = totalCount > 5;
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    search.setQuery(value);
+    search.setIsOpen(value.length > 0);
+  };
+
+  const handleSelectChatroom = (chatroom: NonNullable<ChatroomEntity>) => {
+    if (!chatroom.name) return;
+    // Redirigir a la sala
+    navigate(`/room/${chatroom.id}`);
+    search.clearSearch();
+  };
+
+  const handleViewMore = () => {
+    navigate(`/search?q=${encodeURIComponent(search.debouncedQuery)}`);
+    search.clearSearch();
+  };
+
   return (
-    <div className="searchContainer">
-      <input type="text" name="text" required className="inputSearch" placeholder="Busca una Sala..." />
+    <div className="searchContainer relative">
+      <input
+        type="text"
+        name="text"
+        required
+        className="inputSearch"
+        autoComplete="off"
+        placeholder="Busca una Sala..."
+        value={search.query}
+        onChange={handleInputChange}
+      />
       <div className="iconSearch">
         <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96">
-          {/* <!-- Mango de la lupa --> */}
           <path d="M90.829 85.172 68.128 62.471A35.846 35.846 0 0 0 76 40C76 20.118 59.883 4 40 4 20.118 4 4 20.118 4 40s16.118 36 36 36c8.5 0 16.312-2.946 22.471-7.873l22.701 22.701A3.988 3.988 0 0 0 88 92a4 4 0 0 0 2.829-6.828z" fill="#333" />
-
-          {/* <!-- Círculo exterior de la lupa (opcional, para el borde) --> */}
-          <circle cx="40" cy="40" r="28" fill="none" stroke="#333" stroke-width="4" />
-
-          {/* <!-- Pelota de fútbol escalada y centrada en el círculo de la lupa --> */}
+          <circle cx="40" cy="40" r="28" fill="none" stroke="#333" strokeWidth="4" />
           <g transform="translate(40, 40) scale(1.17)">
             <g transform="translate(-24, -24)">
               <circle cx="24" cy="24" r="21" fill="#eff3f9"></circle>
@@ -26,13 +69,55 @@ function SearchInput() {
             </g>
           </g>
         </svg>
-
-
-
       </div>
 
+      {search.isOpen && (
+        <div className="absolute right-0 mt-2 min-w-full w-auto max-w-[calc(100vw-1rem)] md:w-[400px] max-h-[350px] overflow-y-auto bg-background border rounded shadow-md z-50 origin-top-right">
+          {search.isSearching ? (
+            <div className="p-4 text-center text-sm text-muted-foreground">Buscando...</div>
+          ) : search.hasResults && search.queryResult.data ? (
+            <div className="py-2">
+              {chatrooms.map((chatroom) => (
+                <button
+                  key={chatroom.id}
+                  onClick={() => handleSelectChatroom(chatroom)}
+                  className={cn(
+                    "cursor-pointer w-full flex items-center gap-3 px-4 py-3 hover:bg-accent transition-colors",
+                    "text-left",
+                  )}
+                >
+                  <div className="flex-1">
+                    <div className="font-medium text-primary">{chatroom.name}</div>
+                    {chatroom.description && (
+                      <div className="text-sm text-muted-foreground truncate">
+                        {chatroom.description}
+                      </div>
+                    )}
+                  </div>
+                </button>
+              ))}
+
+              {hasMoreResults && (
+                <button
+                  onClick={handleViewMore}
+                  className={cn(
+                    "w-full px-4 py-3 text-sm font-medium text-primary hover:bg-accent transition-colors",
+                    "border-t"
+                  )}
+                >
+                  Ver todos los resultados ({totalCount})
+                </button>
+              )}
+            </div>
+          ) : search.debouncedQuery ? (
+            <div className="p-4 text-center text-sm text-muted-foreground">
+              No se encontraron Salas
+            </div>
+          ) : null}
+        </div>
+      )}
     </div>
-  )
+  );
 }
 
-export default SearchInput
+export default SearchInput;
