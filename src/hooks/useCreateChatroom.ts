@@ -12,6 +12,9 @@ import {
 import { useUserStore } from "@/stores/userStore";
 
 export type IRoom = CreateChatroomMutation["createChatroom"];
+
+
+// Hook para manejar la creacion de una nueva chatroom. importa la mutación, crea sus tipos, formulario, estado de carga, etc.
 export function useCreateChatroom() {
   const [newlyCreatedChatroom, setNewlyCreatedChatroom] = useState<
     CreateChatroomMutation["createChatroom"] | null

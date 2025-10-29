@@ -1,6 +1,12 @@
 import type { IMessage } from "@/data/Chatrooms/useGetMessagesForChatroom";
 import { useEffect, useRef, useState } from "react";
 
+
+
+/*
+Hook para manejar la logica del area de scroll y sonido de nuevos mensajes. En la zona del chat.
+La idea es que cuando apenas se monte el componente o cuando lleguen nuevos mensajes, el area de scroll baje automaticamente al final, y que suene un sonido si el mensaje no es del usuario actual.
+*/
 export function useScrollAreaAndSound({
   messages,
   currentUserId,

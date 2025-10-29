@@ -1,10 +1,12 @@
-import { useChatroomMutations } from "@/data/Chatrooms/useChatroomsMutations";
-import { useLiveUsersSubscriptions } from "@/data/Chatrooms/useLiveUsersSubscriptions";
-import { useGetUsersAndChatroomInfo } from "@/data/Users/useGetUsersOfChatroom";
-import { ChatroomAccess, type UserEntity } from "@/gql/graphql";
-
 import { useEffect, useState } from "react";
+import { ChatroomAccess, type UserEntity } from "@/gql/graphql";
+import { useChatroomMutations } from "@/data/Chatrooms/useChatroomsMutations";
+import { useGetUsersAndChatroomInfo } from "@/data/Users/useGetUsersOfChatroom";
+import { useLiveUsersSubscriptions } from "@/data/Chatrooms/useLiveUsersSubscriptions";
 
+
+
+//Este hook maneja toda la logica relacionada con una chatroom especifica, si informacion de la chatroom, usuarios en vivo, si el usuario es parte de la chatroom, etc.
 export function useChatroom({
   userId,
   chatroomId,
@@ -73,16 +75,16 @@ export function useChatroom({
         chatroomInfo.getChatroomById.access === ChatroomAccess.Public
           ? true
           : chatroomInfo.getChatroomById.users.some(
-              (user) => user.id === userId
-            )
+            (user) => user.id === userId
+          )
       );
     }
   }, [chatroomInfo, userId]);
 
   return {
-    infoChatroom: chatroomInfo?.getChatroomById,
-    liveUsers,
-    liveUsersLoading,
-    isUserPartOfChatroom,
+    infoChatroom: chatroomInfo?.getChatroomById, // Info of chatroom, nombre, desc,etc.
+    liveUsers, //usuarios conectados en vivo
+    liveUsersLoading, //loading de usuarios en vivo
+    isUserPartOfChatroom, //si el usuario es parte de la chatroom
   };
 }

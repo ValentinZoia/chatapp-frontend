@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+// Hook reutilizable para manejar la logica de un stepper.
 export function useRoomCreationStepper() {
   const [currentStep, setCurrentStep] = useState(0);
 

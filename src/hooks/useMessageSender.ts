@@ -6,8 +6,10 @@ export function useMessageSender(chatroomId: number, userId: number) {
   const [messageContent, setMessageContent] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
+  // Mutacion para enviar mensaje.
   const { sendMessage } = useMessagesMutations(userId);
 
+  // Configuracion de react-dropzone para manejar la subida de imagenes.
   const { getRootProps, getInputProps } = useDropzone({
     onDrop: (acceptedFiles) => {
       const file = acceptedFiles[0];
@@ -17,9 +19,11 @@ export function useMessageSender(chatroomId: number, userId: number) {
     },
   });
 
+  // Generar una URL de previsualizacion para la imagen seleccionada asi se puede mostrar.
   const previewUrl = selectedFile ? URL.createObjectURL(selectedFile) : null;
 
   const handleSendMessage = async () => {
+    //si no hay contenido ni archivo, no enviar nada.
     if (!messageContent.trim() && !selectedFile) return;
 
     try {
