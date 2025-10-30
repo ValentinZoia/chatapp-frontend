@@ -10,6 +10,7 @@ import { useChatroom } from "@/hooks/useChatroom";
 
 // import { Suspense } from "react";
 import { useUserStore } from "@/stores/userStore";
+import { DocumentHead } from "@/components/DocumentHead";
 
 function ChatRoomContent() {
   const { roomId } = useParams<{ roomId: string }>();
@@ -28,8 +29,10 @@ function ChatRoomContent() {
     return null;
   }
 
-  if (!chatroomId || !userId) {
+  if (!chatroomId || !userId || !infoChatroom || !infoChatroom.id || !infoChatroom.name) {
     return (
+
+
       <div className="flex h-full items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-foreground">
@@ -43,26 +46,32 @@ function ChatRoomContent() {
           </Link>
         </div>
       </div>
+
     );
   }
 
   return (
-    <div className="flex h-screen flex-col overflow-y-hidden">
-      {/* Room Header */}
-      <ChatRoomHeader roomInfo={infoChatroom} userId={userId} />
 
-      {/* Chat Messages */}
-      {/* <Suspense
-        fallback={
-          <div className="flex-1 overflow-auto">Cargando mensajes...</div>
-        }
-      > */}
-      <ChatArea currentUserId={userId} />
-      {/* </Suspense> */}
+    <>
+      <article>
 
-      {/* Message Input */}
-      <InputMessage chatroomId={chatroomId} userId={userId} />
-    </div>
+        <DocumentHead
+          title={infoChatroom.name}
+          description={infoChatroom.description || `Chatroom de ${infoChatroom.name} en Futbol Chat`}
+        />
+      </article>
+      <div className="flex h-screen flex-col overflow-y-hidden">
+        {/* Room Header */}
+        <ChatRoomHeader roomInfo={infoChatroom} userId={userId} />
+
+        {/* Chat Area of Messages */}
+        <ChatArea currentUserId={userId} />
+
+
+        {/* Message Input */}
+        <InputMessage chatroomId={chatroomId} userId={userId} />
+      </div>
+    </>
   );
 }
 
