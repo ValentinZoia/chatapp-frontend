@@ -8,7 +8,7 @@ interface Props {
 }
 
 function Message({ msg, isOwn }: Props) {
-  if (!msg) return null;
+  if (!msg || (!msg.node.content && !msg.node.imageUrl)) return null;
   return (
     <>
       <Avatar className="h-9 w-9 shrink-0">
@@ -36,15 +36,26 @@ function Message({ msg, isOwn }: Props) {
           </span>
         </div>
         <div
-          className={`rounded-lg px-4 py-2 max-w-[80vw] sm:max-w-[60vw] break-words whitespace-pre-line ${
-            isOwn
-              ? "bg-primary text-primary-foreground"
-              : "bg-muted text-foreground"
-          }`}
+          className={`rounded-lg  max-w-[80vw] sm:max-w-[60vw] break-words whitespace-pre-line ${isOwn
+            ? "bg-primary text-primary-foreground"
+            : "bg-muted text-foreground"
+            }`}
         >
-          <p className="text-sm break-words whitespace-pre-line">
-            {msg.node.content}
-          </p>
+          {msg.node.content && (
+
+
+            <p className="text-sm break-words whitespace-pre-line px-4  py-2">
+              {msg.node.content}
+            </p>
+          )
+          }
+          {msg.node.imageUrl && (
+            <img
+              src={msg.node.imageUrl}
+              alt="Adjunto"
+              className="max-h-60 w-auto rounded p-1"
+            />
+          )}
         </div>
       </div>
     </>
