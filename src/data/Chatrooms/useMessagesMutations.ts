@@ -14,7 +14,7 @@ import type {
 } from "@/gql/graphql";
 
 import { useMutation } from "@apollo/client/react";
-import { GET_CHATROOMS_FOR_USER } from "@/graphql/queries";
+import { GET_MESSAGES_FOR_CHATROOM } from "@/graphql/queries";
 
 export function useMessagesMutations(userId?: number) {
   //send Message
@@ -30,7 +30,7 @@ export function useMessagesMutations(userId?: number) {
     {
       refetchQueries: [
         {
-          query: GET_CHATROOMS_FOR_USER,
+          query: GET_MESSAGES_FOR_CHATROOM,
           variables: { userId },
         },
       ],
