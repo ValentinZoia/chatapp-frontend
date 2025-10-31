@@ -1,3 +1,4 @@
+"use no memo";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Message } from "../Message";
 
@@ -9,16 +10,15 @@ import { useState } from "react";
 
 interface ChatAreaProps {
   currentUserId: number;
-  // messagesLoading?: boolean;
+
 }
 
 function ChatArea({
-  // messages,
+
   currentUserId,
-}: // hasMore,
-// loadMoreMessages,
-// messagesLoading,
-ChatAreaProps) {
+}:
+  ChatAreaProps) {
+
   const { messages, hasMore, loadMoreMessages, messagesLoading } =
     useChatAreaMessages();
   const { messagesEndRef, scrollAreaRef, setShouldScrollToBottom } =
@@ -31,7 +31,7 @@ ChatAreaProps) {
   // Handler para cargar más mensajes
   const handleLoadMore = async () => {
     if (isLoadingMore) return;
-    console.log("cargando mas...");
+
     // Guardar posición actual del scroll antes de cargar
     const scrollContainer = scrollAreaRef.current?.querySelector(
       "[data-radix-scroll-area-viewport]"
@@ -69,12 +69,13 @@ ChatAreaProps) {
               onClick={handleLoadMore}
               disabled={isLoadingMore || messagesLoading}
               variant="outline"
+              className={`${isLoadingMore || messagesLoading ? "cursor-not-allowed border-none" : ""}`}
               size="sm"
             >
-              {messagesLoading ? (
+              {isLoadingMore || messagesLoading ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Cargando...
+                  <Loader2 className="text-center mr-2 h-4 w-4 text-blue-500 animate-spin" />
+
                 </>
               ) : (
                 "Cargar mensajes anteriores"
@@ -89,11 +90,10 @@ ChatAreaProps) {
             {messages.map((msg) => (
               <div
                 key={msg?.node?.id}
-                className={`flex gap-3 ${
-                  msg?.node?.user?.id === currentUserId
-                    ? "flex-row-reverse"
-                    : "flex-row"
-                }`}
+                className={`flex gap-3 ${msg?.node?.user?.id === currentUserId
+                  ? "flex-row-reverse"
+                  : "flex-row"
+                  }`}
               >
                 <Message
                   msg={msg}
