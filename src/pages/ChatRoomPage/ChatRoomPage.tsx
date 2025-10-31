@@ -1,12 +1,13 @@
-import { Suspense } from "react";
-import { ChatRoomContent, ChatRoomSkeleton } from "./_components";
+
+
+import { ChatRoomContent, } from "./_components";
 
 
 function ChatRoomPage() {
   return (
-    <Suspense fallback={<ChatRoomSkeleton />}>
-      <ChatRoomContent />
-    </Suspense>
+
+    <ChatRoomContent />
+
   );
 }
 
