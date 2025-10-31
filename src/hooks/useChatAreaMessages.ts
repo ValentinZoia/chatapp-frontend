@@ -1,9 +1,11 @@
+
 import {
   useGetMessagesForChatroom,
   type IMessage,
 } from "@/data/Chatrooms/useGetMessagesForChatroom";
-import { useMessagesSubscriptions } from "@/data/Chatrooms/useMessagesSubscriptions";
-import { useCallback, useEffect, useState } from "react";
+import { NEW_MESSAGE_SUBSCRIPTION } from "@/graphql/subscriptions";
+import type { NewMessageSubscription } from "@/gql/graphql";
+import { useCallback, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 export function useChatAreaMessages() {
@@ -13,99 +15,115 @@ export function useChatAreaMessages() {
   }
 
   const chatroomId = parseInt(roomId!);
-  const [messages, setMessages] = useState<IMessage[]>([]);
-  // const [cursor, setCursor] = useState<number | null>(null);
-  const [hasMore, setHasMore] = useState(false);
   const {
     data: messagesData,
     error: messagesError,
     loading: messagesLoading,
     fetchMore,
+    subscribeToMore,
   } = useGetMessagesForChatroom(chatroomId);
 
-  const { newMessageData, newMessageError } = useMessagesSubscriptions({
-    chatroomId,
-  });
-  if (newMessageError) {
-    console.error("Subscription error:", newMessageError);
-  }
   if (messagesError) {
     console.error("Messages query error:", messagesError);
   }
 
-  // Update messages
+  // Suscribirse a nuevos mensajes
   useEffect(() => {
-    if (messagesData?.getMessagesForChatroom) {
-      const edges = messagesData.getMessagesForChatroom.edges;
-      const pageInfo = messagesData.getMessagesForChatroom.pageInfo;
+    if (!subscribeToMore) return;
 
-      const uniqueMessages = Array.from(new Set(edges.map((m) => m.node.id)))
-        .map((id) => edges.find((m) => m.node.id === id))
-        .filter((m): m is IMessage => m !== undefined && m !== null);
+    const unsubscribe = subscribeToMore<NewMessageSubscription>({
+      document: NEW_MESSAGE_SUBSCRIPTION,
+      variables: { chatroomId, take: 15 },
+      updateQuery: (prev, { subscriptionData }) => {
+        if (!subscriptionData.data?.newMessage) return prev;
 
-      setMessages(uniqueMessages);
-      setHasMore(pageInfo.hasNextPage);
-      // setCursor(pageInfo.endCursor || null);
-    }
-  }, [messagesData, setMessages, setHasMore]);
+        // Crear una copia profunda del mensaje y añadir createdAt con el formato correcto
+        const newMessage: IMessage = {
+          ...subscriptionData.data.newMessage,
+          node: {
+            ...subscriptionData.data.newMessage.node,
+            createdAt: new Date().toISOString(), // Formato ISO para compatibilidad
 
-  // Handle new messages from subscription
-  useEffect(() => {
-    if (newMessageData?.newMessage) {
-      setMessages((prev) => {
-        if (
-          newMessageData.newMessage &&
-          !prev.find((m) => m?.node.id === newMessageData.newMessage?.node.id)
-        ) {
-          return [...prev, newMessageData.newMessage].filter(
-            (m): m is IMessage => m !== undefined && m !== null
-          );
+          },
+
+        };
+
+
+
+        // Si no hay mensajes previos o no hay edges, inicializar
+        if (!prev.getMessagesForChatroom?.edges) {
+          return {
+            getMessagesForChatroom: {
+              edges: [newMessage],
+              pageInfo: {
+                hasNextPage: false,
+                endCursor: newMessage.cursor
+              },
+              totalCount: 1
+            }
+          };
         }
-        return prev.filter((m): m is IMessage => m !== undefined && m !== null);
-      });
-    }
-  }, [newMessageData]);
+
+        // Si el mensaje ya existe en el cache, no lo agregues
+        const edges = prev.getMessagesForChatroom.edges;
+        if (edges.some(msg => msg?.node?.id === newMessage.node.id)) {
+          return prev;
+        }
+
+        // Agregar el nuevo mensaje al cache
+        return {
+          ...prev,
+          getMessagesForChatroom: {
+            ...prev.getMessagesForChatroom,
+            edges: [...edges, newMessage],
+            totalCount: (prev.getMessagesForChatroom.totalCount ?? 0) + 1,
+          },
+        };
+      },
+    });
+
+    return () => unsubscribe();
+  }, [chatroomId, subscribeToMore]);
+
+
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const messages = messagesData?.getMessagesForChatroom?.edges ?? [];
+  const hasMore = messagesData?.getMessagesForChatroom?.pageInfo?.hasNextPage ?? false;
 
   const loadMoreMessages = useCallback(async () => {
     if (!hasMore || !fetchMore || messagesLoading) return;
-    console.log("Loading more messages...");
     const oldestMessageId = messages[0]?.node.id;
-    console.log(
-      "oldestMessageId:",
-      oldestMessageId + messages[0]?.node.content
-    );
     if (!oldestMessageId) return;
-
     try {
-      const result = await fetchMore({
+      await fetchMore({
         variables: {
           chatroomId,
           cursor: oldestMessageId,
           take: 15,
         },
-      });
-
-      if (result?.data?.getMessagesForChatroom) {
-        const newMessages = result.data.getMessagesForChatroom.edges;
-        const pageInfo = result.data.getMessagesForChatroom.pageInfo;
-        console.log("Fetched New page messages:", newMessages);
-        setMessages((prev) => {
+        updateQuery: (prev, { fetchMoreResult }) => {
+          if (!fetchMoreResult) return prev;
+          const prevEdges = prev.getMessagesForChatroom?.edges ?? [];
+          const newEdges = fetchMoreResult.getMessagesForChatroom?.edges ?? [];
           // Evitar duplicados
-          const existingIds = new Set(prev.map((m) => m.node.id));
-          const uniqueNewMessages = newMessages.filter(
-            (m) => !existingIds.has(m.node.id)
-          );
-          console.log("Unique New Messages:", uniqueNewMessages);
-          console.log("NUEVO ARRAY COMPLETO", [...uniqueNewMessages, ...prev]);
-          return [...uniqueNewMessages, ...prev];
-        });
-
-        setHasMore(pageInfo.hasNextPage);
-      }
+          const allEdges = [...newEdges, ...prevEdges];
+          const uniqueEdges = Array.from(new Map(allEdges.map(m => [m.node.id, m])).values());
+          return {
+            ...fetchMoreResult,
+            getMessagesForChatroom: {
+              ...fetchMoreResult.getMessagesForChatroom,
+              edges: uniqueEdges,
+            },
+          };
+        },
+      });
     } catch (error) {
       console.error("Error loading more messages:", error);
     }
-  }, [messages, hasMore, fetchMore, chatroomId, messagesLoading]);
+  }, [hasMore, fetchMore, chatroomId, messages, messagesLoading]);
+
+
 
   return { messages, loadMoreMessages, hasMore, messagesLoading };
 }

@@ -1,3 +1,4 @@
+"use no memo";
 import { useLiveUsersSubscriptions } from "@/data/Chatrooms/useLiveUsersSubscriptions";
 import { Badge } from "../ui/badge";
 import { cn } from "@/lib/utils";

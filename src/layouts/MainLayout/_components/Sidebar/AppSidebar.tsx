@@ -26,7 +26,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     <Sidebar collapsible="offcanvas" variant="sidebar" className="hidden md:block"  {...props}>
       <HomeSidebarHeader />
 
-      <SidebarContent>
+      <SidebarContent className="overflow-x-hidden">
         {/* Home */}
         <SidebarGroup>
           <SidebarGroupContent>

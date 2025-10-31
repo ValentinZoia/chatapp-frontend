@@ -1,7 +1,5 @@
 import { BadgeUsersActives } from "@/components/BadgeUsersActives";
-// import type { IRoom } from "@/components/Sidebar/_components/ItemRoomList/ItemRoomList";
 import { Button } from "@/components/ui/button";
-import type { GetUsersOfChatroomQuery } from "@/gql/graphql";
 import { ArrowLeft, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import { UserAvatarGroup } from "../UserAvatarGroup";
@@ -10,14 +8,28 @@ import { SettingsPopover } from "../SettingsPopover";
 import { useGeneralStore } from "@/stores/generalStore";
 import { DialogDeleteChatroom } from "../DialogDeleteChatroom";
 import { DialogAddMembers } from "../DialogAddMembers";
-// import { Image } from "@/components/Image";
+import { useChatroom } from "@/hooks/useChatroom";
+import { DocumentHead } from "@/components/DocumentHead";
+
+
+
 function ChatRoomHeader({
-  roomInfo,
+  chatroomId,
   userId,
 }: {
-  roomInfo: GetUsersOfChatroomQuery["getChatroomById"] | undefined;
+  chatroomId: number;
   userId: number;
 }) {
+
+  const { infoChatroom: roomInfo } = useChatroom({
+    chatroomId,
+    userId: userId,
+  });
+
+  // if (!isUserPartOfChatroom || !roomInfo || !roomInfo.id || !roomInfo.name) {
+  //   throw new Error("No autorizado");
+  // }
+
   const isDeleteChatroomDialogOpen = useGeneralStore(
     (state) => state.isDeleteChatroomDialogOpen
   );
@@ -30,10 +42,21 @@ function ChatRoomHeader({
   const toogleAddMembersDialog = useGeneralStore(
     (state) => state.toggleAddUsersToChatroomDialog
   );
-  const chatroomId = roomInfo?.id as number;
+
+
+
+
   const isAdmin = userId === roomInfo?.adminId;
+
   return (
     <>
+      <article>
+
+        <DocumentHead
+          title={roomInfo?.name as string}
+          description={roomInfo?.description || `Chatroom de ${roomInfo?.name} en Futbol Chat`}
+        />
+      </article>
       <div className="flex flex-col gap-2 md:flex-row items-start md:items-center md:justify-between border-b border-border bg-card px-6 py-4">
         {/* Flecha, Logo e info de la sala */}
         <div className="w-full md:w-fit flex items-center justify-between gap-8">
@@ -79,7 +102,10 @@ function ChatRoomHeader({
           </div>
 
           {/* Usuarios online */}
+
+
           <BadgeUsersActives chatroomId={roomInfo?.id || 0} />
+
         </div>
       </div>
 

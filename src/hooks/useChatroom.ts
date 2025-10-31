@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
-import { ChatroomAccess, type UserEntity } from "@/gql/graphql";
+import {
+  ChatroomAccess,
+  //  type UserEntity
+} from "@/gql/graphql";
 import { useChatroomMutations } from "@/data/Chatrooms/useChatroomsMutations";
 import { useGetUsersAndChatroomInfo } from "@/data/Users/useGetUsersOfChatroom";
-import { useLiveUsersSubscriptions } from "@/data/Chatrooms/useLiveUsersSubscriptions";
+// import { useLiveUsersSubscriptions } from "@/data/Chatrooms/useLiveUsersSubscriptions";
 
 
 
@@ -17,15 +20,15 @@ export function useChatroom({
   if (userId === undefined) {
     throw new Error("User ID is required");
   }
-  const [liveUsers, setLiveUsers] = useState<UserEntity[]>([]);
+  // const [liveUsers, setLiveUsers] = useState<UserEntity[]>([]);
   const [isUserPartOfChatroom, setIsUserPartOfChatroom] = useState(false);
 
   // Traer los usuarios de la chatroom y la info (name, desc, etc).
   const { data: chatroomInfo } = useGetUsersAndChatroomInfo(chatroomId);
 
   // Traer los usuarios en vivo
-  const { liveUsersData, liveUsersLoading } =
-    useLiveUsersSubscriptions(chatroomId);
+  // const { liveUsersData, liveUsersLoading } =
+  //   useLiveUsersSubscriptions(chatroomId);
 
   const { enterChatroom, leaveChatroom } = useChatroomMutations(userId);
 
@@ -58,11 +61,11 @@ export function useChatroom({
   }, [chatroomId]);
 
   // Update live users
-  useEffect(() => {
-    if (liveUsersData?.liveUsersInChatroom) {
-      setLiveUsers(liveUsersData.liveUsersInChatroom);
-    }
-  }, [liveUsersData]);
+  // useEffect(() => {
+  //   if (liveUsersData?.liveUsersInChatroom) {
+  //     setLiveUsers(liveUsersData.liveUsersInChatroom);
+  //   }
+  // }, [liveUsersData]);
 
   // Check if user is part of chatroom
   useEffect(() => {
@@ -83,8 +86,8 @@ export function useChatroom({
 
   return {
     infoChatroom: chatroomInfo?.getChatroomById, // Info of chatroom, nombre, desc,etc.
-    liveUsers, //usuarios conectados en vivo
-    liveUsersLoading, //loading de usuarios en vivo
+    // liveUsers, //usuarios conectados en vivo
+    // liveUsersLoading, //loading de usuarios en vivo
     isUserPartOfChatroom, //si el usuario es parte de la chatroom
   };
 }

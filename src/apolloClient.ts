@@ -280,7 +280,38 @@ const splitLink = ApolloLink.split(
 
 const client = new ApolloClient({
   link: splitLink,
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    typePolicies: {
+      Subscription: {
+        fields: {
+          liveUsersInChatroom: {
+            merge(_existing, incoming, { readField }) {
+              // Asegurarse de que incoming es un array
+              if (!Array.isArray(incoming)) {
+                return incoming;
+              }
+
+              // Crear un Map de usuarios por ID para facilitar el merge
+              const userMap = new Map(
+                incoming.map(user => [readField('id', user), user])
+              );
+
+              return Array.from(userMap.values());
+            },
+            // Añadir keyArgs para manejar múltiples salas
+            keyArgs: ['chatroomId']
+          }
+        }
+      },
+      Query: {
+        fields: {
+          liveUsersInChatroom: {
+            keyArgs: ['chatroomId']
+          }
+        }
+      }
+    }
+  }),
 });
 
 export default client;
