@@ -3,7 +3,6 @@ import { useLiveUsersSubscriptions } from "@/data/Chatrooms/useLiveUsersSubscrip
 import { Badge } from "../ui/badge";
 import { cn } from "@/lib/utils";
 function BadgeUsersActives({ chatroomId }: { chatroomId: number }) {
-
   const { liveUsersData, liveUsersLoading } =
     useLiveUsersSubscriptions(chatroomId);
 
