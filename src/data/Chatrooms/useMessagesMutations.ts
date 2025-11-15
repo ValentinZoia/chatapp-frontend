@@ -14,10 +14,11 @@ import type {
 } from "@/gql/graphql";
 
 import { useMutation } from "@apollo/client/react";
-import { GET_MESSAGES_FOR_CHATROOM } from "@/graphql/queries";
+// import { GET_MESSAGES_FOR_CHATROOM } from "@/graphql/queries";
 
-export function useMessagesMutations(userId?: number) {
+export function useMessagesMutations(chatroomId?: number) {
   //send Message
+  console.log(chatroomId);
   const [
     sendMessageMutation,
     {
@@ -26,15 +27,15 @@ export function useMessagesMutations(userId?: number) {
       data: sendMessageData,
     },
   ] = useMutation<SendMessageMutation, SendMessageMutationVariables>(
-    SEND_MESSAGE,
-    {
-      refetchQueries: [
-        {
-          query: GET_MESSAGES_FOR_CHATROOM,
-          variables: { userId },
-        },
-      ],
-    }
+    SEND_MESSAGE
+    // {
+    //   refetchQueries: [
+    //     {
+    //       query: GET_MESSAGES_FOR_CHATROOM,
+    //       variables: { chatroomId },
+    //     },
+    //   ],
+    // }
   );
 
   const sendMessage = (input: SendMessageMutationVariables) => {

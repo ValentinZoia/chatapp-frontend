@@ -2,12 +2,12 @@ import { useMessagesMutations } from "@/data/Chatrooms/useMessagesMutations";
 import { useState } from "react";
 import { useDropzone } from "react-dropzone";
 
-export function useMessageSender(chatroomId: number, userId: number) {
+export function useMessageSender(chatroomId: number) {
   const [messageContent, setMessageContent] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   // Mutacion para enviar mensaje.
-  const { sendMessage } = useMessagesMutations(userId);
+  const { sendMessage } = useMessagesMutations(chatroomId);
 
   // Configuracion de react-dropzone para manejar la subida de imagenes.
   const { getRootProps, getInputProps } = useDropzone({

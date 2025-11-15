@@ -77,7 +77,7 @@ function EditProfileForm() {
               <FormControl>
                 <Input
                   type={"text"}
-                  placeholder="New username"
+                  placeholder="Nuevo Nombre"
                   disabled={loading}
                   {...field}
                 />

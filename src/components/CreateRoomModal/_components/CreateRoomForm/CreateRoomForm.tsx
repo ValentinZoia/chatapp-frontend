@@ -2,6 +2,7 @@ import { SubmitBtn } from "@/components/SubmitBtn";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -44,10 +45,10 @@ function CreateRoomForm({ form, loading, onSubmit }: CreateRoomFormProps) {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Chatroom Name</FormLabel>
+                <FormLabel>Nombre de la Sala</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Enter chatroom name"
+                    placeholder="Nombre"
                     {...field}
                     disabled={loading}
                   />
@@ -61,10 +62,10 @@ function CreateRoomForm({ form, loading, onSubmit }: CreateRoomFormProps) {
             name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Description</FormLabel>
+                <FormLabel>Descripción de la Sala</FormLabel>
                 <FormControl>
                   <Textarea
-                    placeholder="Enter chatroom description"
+                    placeholder="Descripción"
                     {...field}
                     value={field.value ?? ""}
                     disabled={loading}
@@ -112,16 +113,19 @@ function CreateRoomForm({ form, loading, onSubmit }: CreateRoomFormProps) {
             name="image"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Image URL</FormLabel>
+                <FormLabel>Imagen URL</FormLabel>
                 <FormControl>
                   <Input
                     type="url"
-                    placeholder="https://example.com/image.jpg"
+                    placeholder="Copia la URL de la imagen acá"
                     {...field}
                     value={field.value ?? ""}
                     disabled={loading}
                   />
                 </FormControl>
+                <FormDescription>
+                  Recomiendo que sea en formato icon 256x256.
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}

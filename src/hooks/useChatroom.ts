@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ChatroomAccess,
   //  type UserEntity
@@ -6,8 +6,6 @@ import {
 import { useChatroomMutations } from "@/data/Chatrooms/useChatroomsMutations";
 import { useGetUsersAndChatroomInfo } from "@/data/Users/useGetUsersOfChatroom";
 // import { useLiveUsersSubscriptions } from "@/data/Chatrooms/useLiveUsersSubscriptions";
-
-
 
 //Este hook maneja toda la logica relacionada con una chatroom especifica, si informacion de la chatroom, usuarios en vivo, si el usuario es parte de la chatroom, etc.
 export function useChatroom({
@@ -33,8 +31,11 @@ export function useChatroom({
   const { enterChatroom, leaveChatroom } = useChatroomMutations(userId);
 
   // Handle enter/leave chatroom
+  const hasEnteredRef = useRef(false);
   useEffect(() => {
     const handleEnter = async () => {
+      if (hasEnteredRef.current) return;
+      hasEnteredRef.current = true;
       try {
         await enterChatroom({ chatroomId });
       } catch (error) {
@@ -43,6 +44,8 @@ export function useChatroom({
     };
 
     const handleLeave = async () => {
+      if (!hasEnteredRef.current) return;
+      hasEnteredRef.current = false;
       try {
         await leaveChatroom({ chatroomId });
       } catch (error) {
@@ -78,8 +81,8 @@ export function useChatroom({
         chatroomInfo.getChatroomById.access === ChatroomAccess.Public
           ? true
           : chatroomInfo.getChatroomById.users.some(
-            (user) => user.id === userId
-          )
+              (user) => user.id === userId
+            )
       );
     }
   }, [chatroomInfo, userId]);

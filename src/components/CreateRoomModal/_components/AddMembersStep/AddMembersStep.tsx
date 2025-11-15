@@ -58,7 +58,7 @@ function AddMembersStep({
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <Label>Add Members</Label>
+        <Label>Agregar Miembros</Label>
 
         {/* <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>

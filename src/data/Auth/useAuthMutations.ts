@@ -9,9 +9,16 @@ import type {
   RegisterMutationVariables,
   LogoutMutation,
   LogoutMutationVariables,
+  RefreshTokenMutation,
+  RefreshTokenMutationVariables,
 } from "@/gql/graphql";
 
-import { LOGIN_USER, REGISTER_USER, LOGOUT_USER } from "@/graphql/mutations";
+import {
+  LOGIN_USER,
+  REGISTER_USER,
+  LOGOUT_USER,
+  REFRESH_TOKEN,
+} from "@/graphql/mutations";
 
 import { useMutation } from "@apollo/client/react";
 
@@ -38,6 +45,19 @@ export function useAuthMutations() {
 
   const logout = () => logoutMutation();
 
+  const [
+    refreshTokenMutation,
+    {
+      loading: refreshTokenLoading,
+      error: refreshTokenError,
+      data: refreshTokenData,
+    },
+  ] = useMutation<RefreshTokenMutation, RefreshTokenMutationVariables>(
+    REFRESH_TOKEN
+  );
+
+  const refershToken = () => refreshTokenMutation();
+
   return {
     login,
     loginLoading,
@@ -53,5 +73,10 @@ export function useAuthMutations() {
     logoutLoading,
     logoutError,
     logoutData,
+
+    refershToken,
+    refreshTokenLoading,
+    refreshTokenError,
+    refreshTokenData,
   };
 }

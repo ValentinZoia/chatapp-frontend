@@ -70,13 +70,13 @@ function LoginForm() {
               <FormControl>
                 <Input
                   type={"text"}
-                  placeholder="example@me.com..."
+                  placeholder="ejemplo@me.com..."
                   disabled={loading}
                   {...field}
                 />
               </FormControl>
               <FormDescription>
-                This is your public display email.
+                Este es tu email.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -91,7 +91,7 @@ function LoginForm() {
               <FormControl>
                 <InputPassword
                   type="password"
-                  placeholder="Password"
+                  placeholder="Contraseña"
                   disabled={loading}
                   {...field}
                 />

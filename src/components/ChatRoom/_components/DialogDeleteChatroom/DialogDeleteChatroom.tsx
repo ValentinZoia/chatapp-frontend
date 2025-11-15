@@ -69,7 +69,7 @@ function DialogDeleteChatroom({
               disabled={isLoading}
               aria-label="Cancelar"
             >
-              Cancel
+              Cancelar
             </Button>
           </DialogClose>
 

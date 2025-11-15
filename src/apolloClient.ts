@@ -5,6 +5,7 @@ import {
   InMemoryCache,
   ApolloLink,
   Observable,
+  gql,
   // HttpLink,
 } from "@apollo/client";
 import UploadHttpLink from "apollo-upload-client/UploadHttpLink.mjs";
@@ -20,6 +21,9 @@ import {
   CombinedProtocolErrors,
 } from "@apollo/client/errors";
 import { loadDevMessages, loadErrorMessages } from "@apollo/client/dev";
+
+import { TokenName } from "./types/tokens";
+import type { RefreshTokenMutation } from "./gql/graphql";
 // Variables de entorno para URLs
 const HTTP_URL =
   import.meta.env.VITE_GRAPHQL_HTTP_URL || "http://localhost:3000/graphql";
@@ -29,11 +33,68 @@ const WS_URL =
 loadDevMessages();
 loadErrorMessages();
 
+export function getTokens() {
+  const cookieString = typeof document === "undefined" ? "" : document.cookie;
+  const cookies = cookieString.split(";").reduce((acc, cookie) => {
+    const [rawKey, ...rest] = cookie.trim().split("=");
+    if (!rawKey) return acc;
+    const key = rawKey;
+    const value = rest.join("=");
+    try {
+      acc[key as TokenName] = decodeURIComponent(value || "");
+    } catch {
+      acc[key as TokenName] = value || "";
+    }
+    return acc;
+  }, {} as { [key in TokenName]?: string });
+
+  return {
+    accessToken: cookies[TokenName.ACCESS],
+    refreshToken: cookies[TokenName.REFRESH],
+  };
+}
+
+export function setTokens({
+  accessToken,
+  refreshToken,
+  days = 7,
+}: {
+  accessToken?: string;
+  refreshToken?: string;
+  days?: number;
+}) {
+  if (typeof document === "undefined") return;
+
+  const secure = location.protocol === "https:" ? "; Secure" : "";
+  const expires = new Date(
+    Date.now() + days * 24 * 60 * 60 * 1000
+  ).toUTCString();
+  const sameSite = "; SameSite=Lax";
+
+  if (accessToken !== undefined) {
+    document.cookie = `${TokenName.ACCESS}=${encodeURIComponent(
+      accessToken
+    )}; Expires=${expires}; Path=/;${sameSite}${secure}`;
+  }
+
+  if (refreshToken !== undefined) {
+    document.cookie = `${TokenName.REFRESH}=${encodeURIComponent(
+      refreshToken
+    )}; Expires=${expires}; Path=/;${sameSite}${secure}`;
+  }
+}
+
+function deleteTokensFromCookies() {
+  // Elimina las cookies estableciendo una fecha de expiración en el pasado
+  document.cookie = `${TokenName.ACCESS}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
+  document.cookie = `${TokenName.REFRESH}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
+}
+
 // Refresco de token
-async function refreshToken(client) {
+async function refreshToken(client: ApolloClient) {
   try {
-    const { data } = await client.mutate({
-      mutation: /* GraphQL */ `
+    const { data } = await client.mutate<RefreshTokenMutation>({
+      mutation: gql`
         mutation RefreshToken {
           refreshToken
         }
@@ -41,7 +102,7 @@ async function refreshToken(client) {
     });
     const newAccessToken = data?.refreshToken;
     if (!newAccessToken) throw new Error("New access token not received");
-    return `Bearer ${newAccessToken}`;
+    return newAccessToken;
   } catch (error) {
     console.error(error);
     throw new Error("Error getting new access token");
@@ -49,8 +110,8 @@ async function refreshToken(client) {
 }
 
 export function clearAuthSession() {
-  localStorage.removeItem("accessToken");
-  localStorage.removeItem("refreshToken");
+  // Eliminar tokens de las cookies
+  deleteTokensFromCookies();
 
   // Limpiar estado del usuario
   useUserStore.setState({
@@ -60,9 +121,6 @@ export function clearAuthSession() {
     email: "",
     isAuthenticated: false,
   });
-
-  // Opcional: redirigir al login
-  // window.location.href = "/login";
 }
 
 let retryCount = 0;
@@ -72,9 +130,12 @@ const maxRetry = 3;
 const wsLink = new GraphQLWsLink(
   createClient({
     url: WS_URL,
-    connectionParams: () => ({
-      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-    }),
+    connectionParams: () => {
+      const { accessToken } = getTokens();
+      return {
+        Authorization: accessToken ? `Bearer ${accessToken}` : "",
+      };
+    },
     retryAttempts: Infinity, // reconnect:true
     shouldRetry: () => true, // opción para reintentar siempre
   })
@@ -107,51 +168,41 @@ const uploadLink = new UploadHttpLink({
 
 // AuthLink para añadir el token
 const authLink = new SetContextLink((prevContext) => {
-  const token = localStorage.getItem("accessToken");
+  const { accessToken } = getTokens();
   return {
     headers: {
       ...prevContext.headers,
-      Authorization: token ? `Bearer ${token}` : "",
+      Authorization: accessToken ? `Bearer ${accessToken}` : "",
     },
   };
 });
 
 // ErrorLink con refresco automático de token
 const errorLink = new ErrorLink(({ error, operation, forward }) => {
-  // ✅ Manejo de errores GraphQL usando CombinedGraphQLErrors
+  // Manejo de errores GraphQL usando CombinedGraphQLErrors
   if (CombinedGraphQLErrors.is(error)) {
     error.errors.forEach(({ message, locations, path, extensions }) => {
       console.error(
         `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
       );
 
-      // ✅ Error de autenticación - intentar refresh token
-      if (extensions?.code === "UNAUTHENTICATED") {
+      // Error de autenticación - intentar refresh token
+      if (
+        message.includes("Unauthorized") ||
+        extensions?.code === "Unauthorized"
+      ) {
         console.log("SE TE VENCIO EL TOKEN");
-        clearAuthSession(); // por el momento esto
-        return;
         if (retryCount < maxRetry) {
           retryCount++;
           console.log(
             "Intentando refrescar el token..." + retryCount + "/" + maxRetry
           );
           return new Observable((observer) => {
+            // Llamar al endpoint de refresh; el backend setea la cookie HttpOnly con el nuevo access token.
             refreshToken(client)
-              .then((newToken) => {
-                localStorage.setItem(
-                  "accessToken",
-                  newToken.replace("Bearer ", "")
-                );
-
-                // Actualizar headers de la operación
-                operation.setContext(({ headers = {} }) => ({
-                  headers: {
-                    ...headers,
-                    Authorization: newToken,
-                  },
-                }));
-
-                // Reintentar la operación
+              .then(() => {
+                // No escribimos el token en localStorage ni en cookies desde el cliente.
+                // Simplemente reintentar la operación; el navegador enviará la cookie HttpOnly automáticamente.
                 const subscriber = {
                   next: observer.next.bind(observer),
                   error: observer.error.bind(observer),
@@ -173,20 +224,20 @@ const errorLink = new ErrorLink(({ error, operation, forward }) => {
         }
       }
 
-      // ✅ Error específico: refresh token no encontrado
+      // Error específico: refresh token no encontrado
       if (message === "Refresh token not found") {
         console.log("Refresh token not found - clearing session");
         clearAuthSession();
       }
 
-      // ✅ Error específico: token expirado
+      // Error específico: token expirado
       if (message.includes("expired") || extensions?.code === "TOKEN_EXPIRED") {
         console.log("Token expired - attempting refresh");
         clearAuthSession();
       }
     });
   }
-  // ✅ Manejo de errores de protocolo usando CombinedProtocolErrors
+  // Manejo de errores de protocolo usando CombinedProtocolErrors
   else if (CombinedProtocolErrors.is(error)) {
     error.errors.forEach(({ message, extensions }) => {
       console.error(
@@ -196,27 +247,16 @@ const errorLink = new ErrorLink(({ error, operation, forward }) => {
       );
 
       // ✅ Error de autenticación en protocolo
-      if (extensions?.code === "UNAUTHENTICATED") {
+      if (
+        message.includes("Unauthorized") ||
+        extensions?.code === "Unauthorized"
+      ) {
         if (retryCount < maxRetry) {
           retryCount++;
 
           return new Observable((observer) => {
             refreshToken(client)
-              .then((newToken) => {
-                localStorage.setItem(
-                  "accessToken",
-                  newToken.replace("Bearer ", "")
-                );
-
-                // Actualizar headers de la operación
-                operation.setContext(({ headers = {} }) => ({
-                  headers: {
-                    ...headers,
-                    Authorization: newToken,
-                  },
-                }));
-
-                // Reintentar la operación
+              .then(() => {
                 const subscriber = {
                   next: observer.next.bind(observer),
                   error: observer.error.bind(observer),
@@ -244,7 +284,7 @@ const errorLink = new ErrorLink(({ error, operation, forward }) => {
       }
     });
   }
-  // ✅ Manejo de errores de red
+  // Manejo de errores de red
   else {
     console.error(`[Network error]: ${error}`);
 
@@ -293,24 +333,24 @@ const client = new ApolloClient({
 
               // Crear un Map de usuarios por ID para facilitar el merge
               const userMap = new Map(
-                incoming.map(user => [readField('id', user), user])
+                incoming.map((user) => [readField("id", user), user])
               );
 
               return Array.from(userMap.values());
             },
             // Añadir keyArgs para manejar múltiples salas
-            keyArgs: ['chatroomId']
-          }
-        }
+            keyArgs: ["chatroomId"],
+          },
+        },
       },
       Query: {
         fields: {
           liveUsersInChatroom: {
-            keyArgs: ['chatroomId']
-          }
-        }
-      }
-    }
+            keyArgs: ["chatroomId"],
+          },
+        },
+      },
+    },
   }),
 });
 

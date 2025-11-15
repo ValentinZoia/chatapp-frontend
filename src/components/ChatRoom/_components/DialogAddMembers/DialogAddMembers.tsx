@@ -80,7 +80,7 @@ function DialogAddMembers({
               aria-label="Cancelar"
               onClick={resetSelection}
             >
-              Cancel
+              Cancelar
             </Button>
           </DialogClose>
 
