@@ -66,17 +66,17 @@ function RegisterForm() {
           name="fullname"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Full Name</FormLabel>
+              <FormLabel>Username</FormLabel>
               <FormControl>
                 <Input
                   type={"text"}
-                  placeholder="Full Name"
+                  placeholder="username"
                   disabled={loading}
                   {...field}
                 />
               </FormControl>
               <FormDescription>
-                This is your public display name.
+                Este es tu nombre de usuario.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -91,13 +91,13 @@ function RegisterForm() {
               <FormControl>
                 <Input
                   type={"text"}
-                  placeholder="example@me.com..."
+                  placeholder="ejemplo@me.com..."
                   disabled={loading}
                   {...field}
                 />
               </FormControl>
               <FormDescription>
-                This is your public display email.
+                Este es tu email.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -112,7 +112,7 @@ function RegisterForm() {
               <FormControl>
                 <InputPassword
                   type="password"
-                  placeholder="Password"
+                  placeholder="Contraseña"
                   disabled={loading}
                   {...field}
                 />
@@ -131,7 +131,7 @@ function RegisterForm() {
               <FormControl>
                 <InputPassword
                   type="password"
-                  placeholder="Confirm Password"
+                  placeholder="Confirmar Contraseña"
                   disabled={loading}
                   {...field}
                 />

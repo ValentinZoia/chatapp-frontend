@@ -73,12 +73,12 @@ function CreateRoomModal() {
 
   const steps = [
     {
-      title: "Create Chatroom",
-      description: "Enter a name for your new chatroom",
+      title: "Crear Sala",
+      description: "Escribe un nombre para tu nueva sala.",
     },
     {
-      title: "Add Members",
-      description: "Search and add members to your chatroom",
+      title: "Agregar Miembros",
+      description: "Busca y agrega miembros a tu sala.",
     },
   ];
 
@@ -117,7 +117,7 @@ function CreateRoomModal() {
             <div className="flex gap-2 items-center ">
               <Button variant="outline" onClick={goToPreviousStep}>
                 <ChevronLeft className="h-4 w-4 mr-2" />
-                Back
+                Volver
               </Button>
               <Button variant="outline" onClick={handleClose}>
                 Omitir
@@ -128,7 +128,7 @@ function CreateRoomModal() {
           {currentStep === 1 && selectedUsers.length > 0 && (
             <Button onClick={onAddUsers} disabled={addUsersLoading}>
               <UserPlus className="h-4 w-4 mr-2" />
-              {addUsersLoading ? "Adding..." : "Add Users"}
+              {addUsersLoading ? "Agregando..." : "Agregar Usuarios"}
             </Button>
           )}
         </DialogFooter>
