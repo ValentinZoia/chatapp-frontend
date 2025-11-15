@@ -21,6 +21,7 @@ type Documents = {
     "\n  mutation LeaveChatroom($chatroomId: Float!) {\n    leaveChatroom(chatroomId: $chatroomId)\n  }\n": typeof types.LeaveChatroomDocument,
     "\n  mutation Login($logInInput: LogInInput!) {\n    login(LogInInput: $logInInput) {\n      user {\n        id\n        email\n        fullname\n        avatarUrl\n      }\n    }\n  }\n": typeof types.LoginDocument,
     "\n  mutation Logout {\n    logout\n  }\n": typeof types.LogoutDocument,
+    "\n  mutation refreshToken {\n    refreshToken\n  }\n": typeof types.RefreshTokenDocument,
     "\n  mutation Register($registerInput: RegisterInput!) {\n    register(RegisterInput: $registerInput) {\n      user {\n        id\n        email\n        fullname\n        avatarUrl\n      }\n    }\n  }\n": typeof types.RegisterDocument,
     "\n  mutation SendMessage($chatroomId: Float!, $content: String!, $image: Upload) {\n    sendMessage(chatroomId: $chatroomId, content: $content, image: $image) {\n      node {\n        id\n        content\n        imageUrl\n        createdAt\n        user {\n          id\n          fullname\n          avatarUrl\n        }\n      }\n      cursor\n    }\n  }\n": typeof types.SendMessageDocument,
     "\n  mutation UpdateUserProfile($fullname: String!, $file: Upload) {\n    updateUserProfile(fullname: $fullname, file: $file) {\n      id\n      email\n      fullname\n      avatarUrl\n    }\n  }\n": typeof types.UpdateUserProfileDocument,
@@ -47,6 +48,7 @@ const documents: Documents = {
     "\n  mutation LeaveChatroom($chatroomId: Float!) {\n    leaveChatroom(chatroomId: $chatroomId)\n  }\n": types.LeaveChatroomDocument,
     "\n  mutation Login($logInInput: LogInInput!) {\n    login(LogInInput: $logInInput) {\n      user {\n        id\n        email\n        fullname\n        avatarUrl\n      }\n    }\n  }\n": types.LoginDocument,
     "\n  mutation Logout {\n    logout\n  }\n": types.LogoutDocument,
+    "\n  mutation refreshToken {\n    refreshToken\n  }\n": types.RefreshTokenDocument,
     "\n  mutation Register($registerInput: RegisterInput!) {\n    register(RegisterInput: $registerInput) {\n      user {\n        id\n        email\n        fullname\n        avatarUrl\n      }\n    }\n  }\n": types.RegisterDocument,
     "\n  mutation SendMessage($chatroomId: Float!, $content: String!, $image: Upload) {\n    sendMessage(chatroomId: $chatroomId, content: $content, image: $image) {\n      node {\n        id\n        content\n        imageUrl\n        createdAt\n        user {\n          id\n          fullname\n          avatarUrl\n        }\n      }\n      cursor\n    }\n  }\n": types.SendMessageDocument,
     "\n  mutation UpdateUserProfile($fullname: String!, $file: Upload) {\n    updateUserProfile(fullname: $fullname, file: $file) {\n      id\n      email\n      fullname\n      avatarUrl\n    }\n  }\n": types.UpdateUserProfileDocument,
@@ -108,6 +110,10 @@ export function graphql(source: "\n  mutation Login($logInInput: LogInInput!) {\
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation Logout {\n    logout\n  }\n"): (typeof documents)["\n  mutation Logout {\n    logout\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation refreshToken {\n    refreshToken\n  }\n"): (typeof documents)["\n  mutation refreshToken {\n    refreshToken\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
