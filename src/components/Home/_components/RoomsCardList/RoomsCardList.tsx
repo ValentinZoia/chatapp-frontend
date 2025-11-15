@@ -1,3 +1,4 @@
+import { Lazy } from "@/components/Lazy";
 import { RoomCard } from "../RoomCard";
 import {
   Field,
@@ -14,24 +15,31 @@ function RoomsCardList({ rooms }: RoomsCardListProps) {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       {rooms.map((room) => (
-        <RoomCard key={room.id} roomId={room.id as number}>
-          <RoomCardHeader
-            roomName={room.name}
-            roomDescription={room.description}
-          >
-            <Field
-              room={{
-                name: room.name,
-                colorHex: room.colorHex,
-                image: room.image,
-              }}
+        <Lazy
+          key={room.id}
+          placeholder={<div></div>} /* ajustá a tu card - skeleton */
+        >
+
+
+          <RoomCard roomId={room.id as number}>
+            <RoomCardHeader
+              roomName={room.name}
+              roomDescription={room.description}
+            >
+              <Field
+                room={{
+                  name: room.name,
+                  colorHex: room.colorHex,
+                  image: room.image,
+                }}
+              />
+            </RoomCardHeader>
+            <RoomCardContent
+              totalMembers={room.users?.length as number}
+              chatroomId={room.id as number}
             />
-          </RoomCardHeader>
-          <RoomCardContent
-            totalMembers={room.users?.length as number}
-            chatroomId={room.id as number}
-          />
-        </RoomCard>
+          </RoomCard>
+        </Lazy>
       ))}
     </div>
   );
